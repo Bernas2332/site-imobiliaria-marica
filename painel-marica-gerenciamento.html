@@ -2,131 +2,176 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maricá Imóveis - Vitrine</title>
+    <title>Painel - Maricá Imóveis</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
-        header { text-align: center; padding: 30px; background: #2c3e50; color: white; border-radius: 10px; margin-bottom: 20px; }
-        
-        /* Barra de Filtros */
-        .filtros-container { background: white; max-width: 900px; margin: 0 auto 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center; }
-        .filtros-container input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; flex: 1; min-width: 200px; outline: none; transition: 0.3s; }
-        .filtros-container input:focus { border-color: #2c3e50; box-shadow: 0 0 5px rgba(44,62,80,0.2); }
-        .btn-limpar { padding: 12px 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-limpar:hover { background: #c0392b; }
-
-        /* Remove as setinhas dos inputs de número */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield; 
-        }
-
-        /* Cards */
-        .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .card { background: white; width: 300px; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .info { padding: 20px; }
-        .titulo { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .preco { font-size: 1.4rem; color: #27ae60; font-weight: bold; margin-bottom: 10px; }
-        .desc { font-size: 0.9rem; color: #666; margin-bottom: 20px; line-height: 1.4; height: 40px; overflow: hidden; }
-        .whatsapp { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.3s; }
-        .whatsapp:hover { background: #20b858; }
-        .msg-vazio { text-align: center; color: #7f8c8d; font-size: 1.2rem; width: 100%; margin-top: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        label { font-weight: bold; color: #555; display: block; margin-top: 15px; }
+        select, input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        textarea { height: 100px; resize: none; }
+        .status-box { background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; display: flex; align-items: center; gap: 10px; }
+        .btn-main { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        .btn-main:hover { background: #1557b0; }
+        .btn-del { width: 100%; padding: 10px; background: #fff; color: #d93025; border: 1px solid #d93025; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: bold; display: none; }
+        #msg { margin-top: 20px; text-align: center; padding: 10px; border-radius: 8px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Imobiliária em Maricá</h1>
-    <p>Encontre o imóvel dos seus sonhos</p>
-</header>
+<div class="container">
+    <h2>Gerenciar Imóveis</h2>
 
-<div class="filtros-container">
-    <input type="text" id="buscaTexto" placeholder="🔍 Buscar por bairro, tipo, detalhes..." oninput="aplicarFiltros()">
-    <input type="number" id="buscaMin" placeholder="R$ Preço Mínimo" min="0" oninput="aplicarFiltros()">
-    <input type="number" id="buscaMax" placeholder="R$ Preço Máximo" min="0" oninput="aplicarFiltros()">
-    <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+    <label>1. Selecione para editar ou criar novo:</label>
+    <select id="seletor" onchange="carregarDadosNoForm()">
+        <option value="0">--- CADASTRAR NOVO IMÓVEL ---</option>
+    </select>
+
+    <hr>
+
+    <input type="hidden" id="id" value="0">
+    
+    <label>Título do Anúncio:</label>
+    <input type="text" id="tit" placeholder="Ex: Casa Duplex em Maricá">
+
+    <label>Preço (R$):</label>
+    <input type="number" step="0.01" id="val" placeholder="Ex: 550000.00">
+
+    <label>Descrição Detalhada:</label>
+    <textarea id="desc" placeholder="Descreva os cômodos, localização, etc..."></textarea>
+
+    <div class="status-box">
+        <input type="checkbox" id="ativo" checked style="width: auto; cursor: pointer;">
+        <span style="cursor: pointer;" onclick="document.getElementById('ativo').click()">Exibir no site (Público)</span>
+    </div>
+
+    <label>Foto do Imóvel (Deixe vazio para manter a atual):</label>
+    <input type="file" id="img" accept="image/*">
+
+    <button class="btn-main" onclick="salvar()">Salvar no Banco de Dados</button>
+    <button class="btn-del" id="btnExcluir" onclick="deletar()">Excluir Imóvel para Sempre</button>
+    
+    <div id="msg"></div>
 </div>
 
-<div class="grid" id="lista"></div>
-
 <script>
-    let imoveisGlobais = [];
+    const API_URL = 'https://api-imobiliaria-marica.onrender.com';
+    const API_KEY = 'MaricaImoveis2026@!';
+    let imoveisMemoria = [];
 
-    async function carregarBanco() {
-        const grid = document.getElementById('lista');
+    // Busca a lista mastigada pelo C#
+    async function atualizarLista() {
         try {
-            // Chamando sua API no Render
-            const res = await fetch('https://api-imobiliaria-marica.onrender.com/imoveis');
+            const res = await fetch(`${API_URL}/admin-lista`);
             if (!res.ok) throw new Error();
+            imoveisMemoria = await res.json();
             
-            imoveisGlobais = await res.json(); 
-            renderizarCards(imoveisGlobais);   
+            const seletor = document.getElementById('seletor');
+            seletor.innerHTML = '<option value="0">--- CADASTRAR NOVO IMÓVEL ---</option>';
+            
+            imoveisMemoria.forEach(i => {
+                const status = i.ativo ? "" : " [ESCONDIDO]";
+                const option = document.createElement('option');
+                option.value = i.id;
+                option.textContent = `${i.titulo}${status}`;
+                seletor.appendChild(option);
+            });
         } catch (e) {
-            grid.innerHTML = `<p style="color:red; font-weight:bold; text-align:center;">Erro ao carregar dados. Verifique o servidor C#!</p>`;
+            console.error("Erro na lista:", e);
         }
     }
 
-    function renderizarCards(lista) {
-        const grid = document.getElementById('lista');
+    // Preenche os campos sem erro de formatação
+    function carregarDadosNoForm() {
+        const idSel = document.getElementById('seletor').value;
+        const btnDel = document.getElementById('btnExcluir');
+        const msg = document.getElementById('msg');
+        msg.style.display = 'none';
+
+        if (idSel == "0") {
+            document.getElementById('id').value = 0;
+            document.getElementById('tit').value = "";
+            document.getElementById('val').value = "";
+            document.getElementById('desc').value = "";
+            document.getElementById('ativo').checked = true;
+            document.getElementById('img').value = "";
+            btnDel.style.display = "none";
+        } else {
+            const imovel = imoveisMemoria.find(x => x.id == idSel);
+            if (imovel) {
+                document.getElementById('id').value = imovel.id;
+                document.getElementById('tit').value = imovel.titulo;
+                document.getElementById('val').value = imovel.preco;
+                document.getElementById('desc').value = imovel.descricao;
+                document.getElementById('ativo').checked = imovel.ativo;
+                btnDel.style.display = "block";
+            }
+        }
+    }
+
+    async function salvar() {
+        const msg = document.getElementById('msg');
+        const fd = new FormData();
         
-        if(lista.length === 0) {
-            grid.innerHTML = "<div class='msg-vazio'>😕 Nenhum imóvel encontrado com estes filtros.</div>";
-            return;
+        fd.append('idImovel', document.getElementById('id').value);
+        fd.append('titulo', document.getElementById('tit').value);
+        fd.append('preco', document.getElementById('val').value);
+        fd.append('descricao', document.getElementById('desc').value);
+        fd.append('ativo', document.getElementById('ativo').checked);
+        
+        const file = document.getElementById('img').files[0];
+        if(file) fd.append('arquivo', file);
+
+        msg.style.display = 'block';
+        msg.innerText = "Salvando no servidor...";
+        msg.style.background = "#eee";
+        msg.style.color = "#333";
+
+        try {
+            const res = await fetch(`${API_URL}/salvar-imovel`, {
+                method: 'POST',
+                headers: { 'X-Api-Key': API_KEY },
+                body: fd
+            });
+
+            if(res.ok) {
+                msg.innerText = "✅ Salvo com sucesso!";
+                msg.style.background = "#d4edda";
+                msg.style.color = "#155724";
+                
+                const idAtual = document.getElementById('id').value;
+                await atualizarLista();
+                // Tenta manter o seletor no imóvel que acabou de ser editado (se não for novo)
+                if(idAtual != "0") document.getElementById('seletor').value = idAtual;
+            } else { throw new Error(); }
+        } catch (e) {
+            msg.innerText = "❌ Erro ao salvar.";
+            msg.style.background = "#f8d7da";
+            msg.style.color = "#721c24";
         }
-
-        grid.innerHTML = lista.map(i => {
-            // Formatação de moeda profissional para o Real
-            const precoExibicao = i.preco 
-                ? i.preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) 
-                : "Consulte o valor";
-
-            return `
-                <div class="card">
-                    <img src="${i.fotos || 'https://via.placeholder.com/300x200?text=Sem+Foto'}" alt="Foto do Imóvel">
-                    <div class="info">
-                        <div class="titulo">${i.titulo}</div>
-                        <div class="preco">${precoExibicao}</div>
-                        <div class="desc">${i.descricao}</div>
-                        <a href="https://wa.me/5521999999999?text=Olá! Gostaria de saber mais sobre o imóvel: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
-                    </div>
-                </div>
-            `;
-        }).join('');
     }
 
-    function aplicarFiltros() {
-        const termoBusca = document.getElementById('buscaTexto').value.toLowerCase();
-        const precoMin = parseFloat(document.getElementById('buscaMin').value) || 0;
-        const precoMax = parseFloat(document.getElementById('buscaMax').value) || Infinity;
+    async function deletar() {
+        const id = document.getElementById('id').value;
+        if(id == "0") return;
 
-        const imoveisFiltrados = imoveisGlobais.filter(imovel => {
-            const temTexto = (imovel.titulo && imovel.titulo.toLowerCase().includes(termoBusca)) || 
-                             (imovel.descricao && imovel.descricao.toLowerCase().includes(termoBusca));
+        if(!confirm("⚠️ ATENÇÃO: Deseja apagar este imóvel para sempre?")) return;
+
+        try {
+            const res = await fetch(`${API_URL}/deletar-imovel/${id}`, {
+                method: 'DELETE',
+                headers: { 'X-Api-Key': API_KEY }
+            });
             
-            const precoImovel = imovel.preco || 0;
-            const taNoPreco = precoImovel >= precoMin && precoImovel <= precoMax;
-
-            return temTexto && taNoPreco;
-        });
-
-        renderizarCards(imoveisFiltrados);
+            if(res.ok) {
+                alert("Imóvel excluído com sucesso!");
+                window.location.reload(); 
+            }
+        } catch (e) { alert("Erro ao excluir."); }
     }
 
-    function limparFiltros() {
-        document.getElementById('buscaTexto').value = "";
-        document.getElementById('buscaMin').value = "";
-        document.getElementById('buscaMax').value = "";
-        renderizarCards(imoveisGlobais); 
-    }
-
-    // Inicializa a busca
-    carregarBanco();
+    atualizarLista();
 </script>
 </body>
 </html>

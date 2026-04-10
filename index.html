@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maricá Imóveis - Vitrine</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
+        header { text-align: center; padding: 30px; background: #2c3e50; color: white; border-radius: 10px; margin-bottom: 20px; }
+        
+        /* Barra de Filtros */
+        .filtros-container { background: white; max-width: 900px; margin: 0 auto 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center; }
+        .filtros-container input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; flex: 1; min-width: 200px; outline: none; transition: 0.3s; }
+        .filtros-container input:focus { border-color: #2c3e50; box-shadow: 0 0 5px rgba(44,62,80,0.2); }
+        .btn-limpar { padding: 12px 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-limpar:hover { background: #c0392b; }
+
+        /* Remove as setinhas dos inputs de número */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield; 
+        }
+
+        /* Cards */
+        .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .card { background: white; width: 300px; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .info { padding: 20px; }
+        .titulo { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .preco { font-size: 1.4rem; color: #27ae60; font-weight: bold; margin-bottom: 10px; }
+        .desc { font-size: 0.9rem; color: #666; margin-bottom: 20px; line-height: 1.4; height: 40px; overflow: hidden; }
+        .whatsapp { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .whatsapp:hover { background: #20b858; }
+        .msg-vazio { text-align: center; color: #7f8c8d; font-size: 1.2rem; width: 100%; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Imobiliária em Maricá</h1>
+    <p>Encontre o imóvel dos seus sonhos</p>
+</header>
+
+<div class="filtros-container">
+    <input type="text" id="buscaTexto" placeholder="🔍 Buscar por bairro, tipo, detalhes..." oninput="aplicarFiltros()">
+    <input type="number" id="buscaMin" placeholder="R$ Preço Mínimo" min="0" oninput="aplicarFiltros()">
+    <input type="number" id="buscaMax" placeholder="R$ Preço Máximo" min="0" oninput="aplicarFiltros()">
+    <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+</div>
+
+<div class="grid" id="lista"></div>
+
+<script>
+    let imoveisGlobais = [];
+
+    async function carregarBanco() {
+        const grid = document.getElementById('lista');
+        try {
+            // Chamando sua API no Render
+            const res = await fetch('https://api-imobiliaria-marica.onrender.com/imoveis');
+            if (!res.ok) throw new Error();
+            
+            imoveisGlobais = await res.json(); 
+            renderizarCards(imoveisGlobais);   
+        } catch (e) {
+            grid.innerHTML = `<p style="color:red; font-weight:bold; text-align:center;">Erro ao carregar dados. Verifique o servidor C#!</p>`;
+        }
+    }
+
+    function renderizarCards(lista) {
+        const grid = document.getElementById('lista');
+        
+        if(lista.length === 0) {
+            grid.innerHTML = "<div class='msg-vazio'>😕 Nenhum imóvel encontrado com estes filtros.</div>";
+            return;
+        }
+
+        grid.innerHTML = lista.map(i => {
+            // Formatação de moeda profissional para o Real
+            const precoExibicao = i.preco 
+                ? i.preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) 
+                : "Consulte o valor";
+
+            return `
+                <div class="card">
+                    <img src="${i.fotos || 'https://via.placeholder.com/300x200?text=Sem+Foto'}" alt="Foto do Imóvel">
+                    <div class="info">
+                        <div class="titulo">${i.titulo}</div>
+                        <div class="preco">${precoExibicao}</div>
+                        <div class="desc">${i.descricao}</div>
+                        <a href="https://wa.me/5521999999999?text=Olá! Gostaria de saber mais sobre o imóvel: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function aplicarFiltros() {
+        const termoBusca = document.getElementById('buscaTexto').value.toLowerCase();
+        const precoMin = parseFloat(document.getElementById('buscaMin').value) || 0;
+        const precoMax = parseFloat(document.getElementById('buscaMax').value) || Infinity;
+
+        const imoveisFiltrados = imoveisGlobais.filter(imovel => {
+            const temTexto = (imovel.titulo && imovel.titulo.toLowerCase().includes(termoBusca)) || 
+                             (imovel.descricao && imovel.descricao.toLowerCase().includes(termoBusca));
+            
+            const precoImovel = imovel.preco || 0;
+            const taNoPreco = precoImovel >= precoMin && precoImovel <= precoMax;
+
+            return temTexto && taNoPreco;
+        });
+
+        renderizarCards(imoveisFiltrados);
+    }
+
+    function limparFiltros() {
+        document.getElementById('buscaTexto').value = "";
+        document.getElementById('buscaMin').value = "";
+        document.getElementById('buscaMax').value = "";
+        renderizarCards(imoveisGlobais); 
+    }
+
+    // Inicializa a busca
+    carregarBanco();
+</script>
+</body>
+</html>
