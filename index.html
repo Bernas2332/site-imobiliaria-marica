@@ -61,7 +61,8 @@
     async function carregarBanco() {
         const grid = document.getElementById('lista');
         try {
-            const res = await fetch('http://localhost:5117/imoveis');
+            // Chamando sua API no Render
+            const res = await fetch('https://api-imobiliaria-marica.onrender.com/imoveis');
             if (!res.ok) throw new Error();
             
             imoveisGlobais = await res.json(); 
@@ -79,17 +80,24 @@
             return;
         }
 
-        grid.innerHTML = lista.map(i => `
-            <div class="card">
-                <img src="${i.fotos || 'https://via.placeholder.com/300x200?text=Sem+Foto'}" alt="Foto">
-                <div class="info">
-                    <div class="titulo">${i.titulo}</div>
-                    <div class="preco">R$ ${i.precoFormatado}</div>
-                    <div class="desc">${i.descricao}</div>
-                    <a href="https://wa.me/5521999999999?text=Olá! Gostaria de saber mais sobre: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
+        grid.innerHTML = lista.map(i => {
+            // Formatação de moeda profissional para o Real
+            const precoExibicao = i.preco 
+                ? i.preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) 
+                : "Consulte o valor";
+
+            return `
+                <div class="card">
+                    <img src="${i.fotos || 'https://via.placeholder.com/300x200?text=Sem+Foto'}" alt="Foto do Imóvel">
+                    <div class="info">
+                        <div class="titulo">${i.titulo}</div>
+                        <div class="preco">${precoExibicao}</div>
+                        <div class="desc">${i.descricao}</div>
+                        <a href="https://wa.me/5521999999999?text=Olá! Gostaria de saber mais sobre o imóvel: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function aplicarFiltros() {
@@ -117,6 +125,7 @@
         renderizarCards(imoveisGlobais); 
     }
 
+    // Inicializa a busca
     carregarBanco();
 </script>
 </body>
