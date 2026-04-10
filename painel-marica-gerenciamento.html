@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel - Maricá Imóveis</title>
+    <title>Painel Administrativo - Maricá Imóveis</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
         .container { background: white; width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -60,11 +60,12 @@
     const API_KEY = 'MaricaImoveis2026@!';
     let imoveisMemoria = [];
 
-    // Busca a lista mastigada pelo C#
+    // Busca a lista mastigada pelo C# (Rota corrigida com /imoveis)
     async function atualizarLista() {
         try {
-            const res = await fetch(`${API_URL}/admin-lista`);
-            if (!res.ok) throw new Error();
+            const res = await fetch(`${API_URL}/imoveis/admin-lista`);
+            if (!res.ok) throw new Error("Erro ao buscar dados da API");
+            
             imoveisMemoria = await res.json();
             
             const seletor = document.getElementById('seletor');
@@ -79,10 +80,14 @@
             });
         } catch (e) {
             console.error("Erro na lista:", e);
+            const msg = document.getElementById('msg');
+            msg.style.display = 'block';
+            msg.innerText = "⚠️ Erro ao conectar com a API no Render.";
+            msg.style.background = "#fff3cd";
+            msg.style.color = "#856404";
         }
     }
 
-    // Preenche os campos sem erro de formatação
     function carregarDadosNoForm() {
         const idSel = document.getElementById('seletor').value;
         const btnDel = document.getElementById('btnExcluir');
@@ -129,7 +134,8 @@
         msg.style.color = "#333";
 
         try {
-            const res = await fetch(`${API_URL}/salvar-imovel`, {
+            // Rota corrigida com /imoveis
+            const res = await fetch(`${API_URL}/imoveis/salvar-imovel`, {
                 method: 'POST',
                 headers: { 'X-Api-Key': API_KEY },
                 body: fd
@@ -140,13 +146,12 @@
                 msg.style.background = "#d4edda";
                 msg.style.color = "#155724";
                 
-                const idAtual = document.getElementById('id').value;
                 await atualizarLista();
-                // Tenta manter o seletor no imóvel que acabou de ser editado (se não for novo)
-                if(idAtual != "0") document.getElementById('seletor').value = idAtual;
-            } else { throw new Error(); }
+            } else { 
+                throw new Error(); 
+            }
         } catch (e) {
-            msg.innerText = "❌ Erro ao salvar.";
+            msg.innerText = "❌ Erro ao salvar (Verifique o servidor C#).";
             msg.style.background = "#f8d7da";
             msg.style.color = "#721c24";
         }
@@ -159,7 +164,8 @@
         if(!confirm("⚠️ ATENÇÃO: Deseja apagar este imóvel para sempre?")) return;
 
         try {
-            const res = await fetch(`${API_URL}/deletar-imovel/${id}`, {
+            // Rota corrigida com /imoveis
+            const res = await fetch(`${API_URL}/imoveis/deletar-imovel/${id}`, {
                 method: 'DELETE',
                 headers: { 'X-Api-Key': API_KEY }
             });
@@ -171,6 +177,7 @@
         } catch (e) { alert("Erro ao excluir."); }
     }
 
+    // Inicializa a lista ao abrir a página
     atualizarLista();
 </script>
 </body>
