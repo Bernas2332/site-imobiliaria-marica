@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Administrativo - Maricá Imóveis</title>
+    <title>Painel Administrativo - Turíbio Imóveis</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
         .container { background: white; width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -21,6 +21,9 @@
 <body>
 
 <div class="container">
+    <div style="text-align: right; margin-bottom: 10px;">
+        <a href="index.html" style="font-size: 13px; color: #1a73e8; text-decoration: none;">← Ver Vitrine Pública</a>
+    </div>
     <h2>Gerenciar Imóveis</h2>
 
     <label>1. Selecione para editar ou criar novo:</label>
@@ -60,12 +63,10 @@
     const API_KEY = 'MaricaImoveis2026@!';
     let imoveisMemoria = [];
 
-    // Busca a lista mastigada pelo C# (Rota corrigida com /imoveis)
     async function atualizarLista() {
         try {
             const res = await fetch(`${API_URL}/imoveis/admin-lista`);
-            if (!res.ok) throw new Error("Erro ao buscar dados da API");
-            
+            if (!res.ok) throw new Error();
             imoveisMemoria = await res.json();
             
             const seletor = document.getElementById('seletor');
@@ -78,16 +79,10 @@
                 option.textContent = `${i.titulo}${status}`;
                 seletor.appendChild(option);
             });
-        } catch (e) {
-            console.error("Erro na lista:", e);
-            const msg = document.getElementById('msg');
-            msg.style.display = 'block';
-            msg.innerText = "⚠️ Erro ao conectar com a API no Render.";
-            msg.style.background = "#fff3cd";
-            msg.style.color = "#856404";
-        }
+        } catch (e) { console.error("Erro na lista:", e); }
     }
 
+    // FUNÇÃO CORRIGIDA PARA RESETAR O ID
     function carregarDadosNoForm() {
         const idSel = document.getElementById('seletor').value;
         const btnDel = document.getElementById('btnExcluir');
@@ -95,7 +90,8 @@
         msg.style.display = 'none';
 
         if (idSel == "0") {
-            document.getElementById('id').value = 0;
+            // RESET TOTAL PARA NOVO CADASTRO
+            document.getElementById('id').value = "0"; // Fundamental!
             document.getElementById('tit').value = "";
             document.getElementById('val').value = "";
             document.getElementById('desc').value = "";
@@ -129,12 +125,9 @@
         if(file) fd.append('arquivo', file);
 
         msg.style.display = 'block';
-        msg.innerText = "Salvando no servidor...";
-        msg.style.background = "#eee";
-        msg.style.color = "#333";
+        msg.innerText = "Salvando...";
 
         try {
-            // Rota corrigida com /imoveis
             const res = await fetch(`${API_URL}/imoveis/salvar-imovel`, {
                 method: 'POST',
                 headers: { 'X-Api-Key': API_KEY },
@@ -144,40 +137,31 @@
             if(res.ok) {
                 msg.innerText = "✅ Salvo com sucesso!";
                 msg.style.background = "#d4edda";
-                msg.style.color = "#155724";
+                
+                // Limpa o formulário após salvar para evitar duplicados
+                document.getElementById('seletor').value = "0";
+                carregarDadosNoForm();
                 
                 await atualizarLista();
-            } else { 
-                throw new Error(); 
-            }
+            } else { throw new Error(); }
         } catch (e) {
-            msg.innerText = "❌ Erro ao salvar (Verifique o servidor C#).";
+            msg.innerText = "❌ Erro ao salvar.";
             msg.style.background = "#f8d7da";
-            msg.style.color = "#721c24";
         }
     }
 
     async function deletar() {
         const id = document.getElementById('id').value;
-        if(id == "0") return;
-
-        if(!confirm("⚠️ ATENÇÃO: Deseja apagar este imóvel para sempre?")) return;
-
+        if(id == "0" || !confirm("⚠️ Apagar para sempre?")) return;
         try {
-            // Rota corrigida com /imoveis
             const res = await fetch(`${API_URL}/imoveis/deletar-imovel/${id}`, {
                 method: 'DELETE',
                 headers: { 'X-Api-Key': API_KEY }
             });
-            
-            if(res.ok) {
-                alert("Imóvel excluído com sucesso!");
-                window.location.reload(); 
-            }
+            if(res.ok) { alert("Excluído!"); window.location.reload(); }
         } catch (e) { alert("Erro ao excluir."); }
     }
 
-    // Inicializa a lista ao abrir a página
     atualizarLista();
 </script>
 </body>
