@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maricá Imóveis - Vitrine</title>
+    <title>Turíbio Imóveis - Vitrine</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
         header { text-align: center; padding: 30px; background: #2c3e50; color: white; border-radius: 10px; margin-bottom: 20px; }
         
+        /* Botão de Consulta em Destaque */
+        .area-consulta { text-align: center; margin: 30px 0; }
+        .btn-consulta { 
+            background: #2c3e50; 
+            color: white; 
+            padding: 18px 30px; 
+            text-decoration: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            display: inline-block;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .btn-consulta:hover { 
+            background: #34495e; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
         /* Barra de Filtros */
         .filtros-container { background: white; max-width: 900px; margin: 0 auto 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center; }
         .filtros-container input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; flex: 1; min-width: 200px; outline: none; transition: 0.3s; }
@@ -15,15 +34,10 @@
         .btn-limpar { padding: 12px 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-limpar:hover { background: #c0392b; }
 
-        /* Remove as setinhas dos inputs de número */
+        /* Inputs de número sem setas */
         input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield; 
-        }
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
 
         /* Cards */
         .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
@@ -42,9 +56,16 @@
 <body>
 
 <header>
-    <h1>Imobiliária em Maricá</h1>
-    <p>Encontre o imóvel dos seus sonhos</p>
+    <h1>Turíbio Imóveis</h1>
+    <p>Encontre o imóvel dos seus sonhos em Maricá</p>
 </header>
+
+<div class="area-consulta">
+    <a href="https://wa.me/5521997177214?text=Olá! Gostaria de agendar uma consulta técnica ou avaliação de imóvel." 
+       class="btn-consulta" target="_blank">
+       🏠 Solicitar Consulta / Avaliação de Imóvel
+    </a>
+</div>
 
 <div class="filtros-container">
     <input type="text" id="buscaTexto" placeholder="🔍 Buscar por bairro, tipo, detalhes..." oninput="aplicarFiltros()">
@@ -57,11 +78,11 @@
 
 <script>
     let imoveisGlobais = [];
+    const WHATSAPP_PADRAO = "5521997177214";
 
     async function carregarBanco() {
         const grid = document.getElementById('lista');
         try {
-            // Chamando sua API no Render
             const res = await fetch('https://api-imobiliaria-marica.onrender.com/imoveis');
             if (!res.ok) throw new Error();
             
@@ -81,7 +102,6 @@
         }
 
         grid.innerHTML = lista.map(i => {
-            // Formatação de moeda profissional para o Real
             const precoExibicao = i.preco 
                 ? i.preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) 
                 : "Consulte o valor";
@@ -93,7 +113,7 @@
                         <div class="titulo">${i.titulo}</div>
                         <div class="preco">${precoExibicao}</div>
                         <div class="desc">${i.descricao}</div>
-                        <a href="https://wa.me/5521999999999?text=Olá! Gostaria de saber mais sobre o imóvel: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
+                        <a href="https://wa.me/${WHATSAPP_PADRAO}?text=Olá! Gostaria de saber mais sobre o imóvel: ${i.titulo}" class="whatsapp" target="_blank">Falar no WhatsApp</a>
                     </div>
                 </div>
             `;
@@ -125,7 +145,6 @@
         renderizarCards(imoveisGlobais); 
     }
 
-    // Inicializa a busca
     carregarBanco();
 </script>
 </body>
