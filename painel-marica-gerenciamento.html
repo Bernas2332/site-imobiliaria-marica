@@ -7,13 +7,11 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
         .container { background: white; width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
         label { font-weight: bold; color: #555; display: block; margin-top: 15px; }
         select, input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
         textarea { height: 100px; resize: none; }
         .status-box { background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; display: flex; align-items: center; gap: 10px; }
-        .btn-main { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.3s; }
-        .btn-main:hover { background: #1557b0; }
+        .btn-main { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         .btn-del { width: 100%; padding: 10px; background: #fff; color: #d93025; border: 1px solid #d93025; border-radius: 8px; cursor: pointer; margin-top: 15px; font-weight: bold; display: none; }
         #msg { margin-top: 20px; text-align: center; padding: 10px; border-radius: 8px; display: none; font-weight: bold; }
     </style>
@@ -26,34 +24,34 @@
     </div>
     <h2>Gerenciar Imóveis</h2>
 
-    <label>1. Selecione para editar ou criar novo:</label>
+    <label>Selecione uma ação:</label>
     <select id="seletor" onchange="carregarDadosNoForm()">
         <option value="0">--- CADASTRAR NOVO IMÓVEL ---</option>
     </select>
 
     <hr>
 
-    <input type="hidden" id="id" value="0">
+    <input type="hidden" id="idImovel" value="0">
     
-    <label>Título do Anúncio:</label>
-    <input type="text" id="tit" placeholder="Ex: Casa Duplex em Maricá">
+    <label>Título:</label>
+    <input type="text" id="tit">
 
     <label>Preço (R$):</label>
-    <input type="number" step="0.01" id="val" placeholder="Ex: 550000.00">
+    <input type="number" step="0.01" id="val">
 
-    <label>Descrição Detalhada:</label>
-    <textarea id="desc" placeholder="Descreva os cômodos, localização, etc..."></textarea>
+    <label>Descrição:</label>
+    <textarea id="desc"></textarea>
 
     <div class="status-box">
-        <input type="checkbox" id="ativo" checked style="width: auto; cursor: pointer;">
-        <span style="cursor: pointer;" onclick="document.getElementById('ativo').click()">Exibir no site (Público)</span>
+        <input type="checkbox" id="ativo" checked>
+        <span>Exibir no site</span>
     </div>
 
-    <label>Foto do Imóvel (Deixe vazio para manter a atual):</label>
+    <label>Foto:</label>
     <input type="file" id="img" accept="image/*">
 
-    <button class="btn-main" onclick="salvar()">Salvar no Banco de Dados</button>
-    <button class="btn-del" id="btnExcluir" onclick="deletar()">Excluir Imóvel para Sempre</button>
+    <button class="btn-main" onclick="salvar()">Salvar no Banco</button>
+    <button class="btn-del" id="btnExcluir" onclick="deletar()">Excluir</button>
     
     <div id="msg"></div>
 </div>
@@ -66,46 +64,37 @@
     async function atualizarLista() {
         try {
             const res = await fetch(`${API_URL}/imoveis/admin-lista`);
-            if (!res.ok) throw new Error();
             imoveisMemoria = await res.json();
-            
             const seletor = document.getElementById('seletor');
             seletor.innerHTML = '<option value="0">--- CADASTRAR NOVO IMÓVEL ---</option>';
-            
             imoveisMemoria.forEach(i => {
-                const status = i.ativo ? "" : " [ESCONDIDO]";
                 const option = document.createElement('option');
                 option.value = i.id;
-                option.textContent = `${i.titulo}${status}`;
+                option.textContent = i.titulo;
                 seletor.appendChild(option);
             });
-        } catch (e) { console.error("Erro na lista:", e); }
+        } catch (e) { console.error(e); }
     }
 
-    // FUNÇÃO CORRIGIDA PARA RESETAR O ID
     function carregarDadosNoForm() {
         const idSel = document.getElementById('seletor').value;
         const btnDel = document.getElementById('btnExcluir');
-        const msg = document.getElementById('msg');
-        msg.style.display = 'none';
-
-        if (idSel == "0") {
-            // RESET TOTAL PARA NOVO CADASTRO
-            document.getElementById('id').value = "0"; // Fundamental!
+        
+        if (idSel === "0") {
+            // RESET ABSOLUTO
+            document.getElementById('idImovel').value = 0;
             document.getElementById('tit').value = "";
             document.getElementById('val').value = "";
             document.getElementById('desc').value = "";
-            document.getElementById('ativo').checked = true;
             document.getElementById('img').value = "";
             btnDel.style.display = "none";
         } else {
             const imovel = imoveisMemoria.find(x => x.id == idSel);
             if (imovel) {
-                document.getElementById('id').value = imovel.id;
+                document.getElementById('idImovel').value = imovel.id;
                 document.getElementById('tit').value = imovel.titulo;
                 document.getElementById('val').value = imovel.preco;
                 document.getElementById('desc').value = imovel.descricao;
-                document.getElementById('ativo').checked = imovel.ativo;
                 btnDel.style.display = "block";
             }
         }
@@ -115,7 +104,10 @@
         const msg = document.getElementById('msg');
         const fd = new FormData();
         
-        fd.append('idImovel', document.getElementById('id').value);
+        // TRAVA DE SEGURANÇA: Garante que o ID vá como número
+        const idParaEnviar = parseInt(document.getElementById('idImovel').value) || 0;
+        
+        fd.append('idImovel', idParaEnviar);
         fd.append('titulo', document.getElementById('tit').value);
         fd.append('preco', document.getElementById('val').value);
         fd.append('descricao', document.getElementById('desc').value);
@@ -125,7 +117,7 @@
         if(file) fd.append('arquivo', file);
 
         msg.style.display = 'block';
-        msg.innerText = "Salvando...";
+        msg.innerText = "Enviando...";
 
         try {
             const res = await fetch(`${API_URL}/imoveis/salvar-imovel`, {
@@ -135,31 +127,30 @@
             });
 
             if(res.ok) {
-                msg.innerText = "✅ Salvo com sucesso!";
+                msg.innerText = "✅ Salvo!";
                 msg.style.background = "#d4edda";
                 
-                // Limpa o formulário após salvar para evitar duplicados
+                // RESET PÓS-SALVAMENTO
                 document.getElementById('seletor').value = "0";
                 carregarDadosNoForm();
-                
                 await atualizarLista();
             } else { throw new Error(); }
         } catch (e) {
-            msg.innerText = "❌ Erro ao salvar.";
+            msg.innerText = "❌ Erro.";
             msg.style.background = "#f8d7da";
         }
     }
 
     async function deletar() {
-        const id = document.getElementById('id').value;
-        if(id == "0" || !confirm("⚠️ Apagar para sempre?")) return;
+        const id = document.getElementById('idImovel').value;
+        if(id == "0" || !confirm("Apagar?")) return;
         try {
             const res = await fetch(`${API_URL}/imoveis/deletar-imovel/${id}`, {
                 method: 'DELETE',
                 headers: { 'X-Api-Key': API_KEY }
             });
-            if(res.ok) { alert("Excluído!"); window.location.reload(); }
-        } catch (e) { alert("Erro ao excluir."); }
+            if(res.ok) { window.location.reload(); }
+        } catch (e) { alert("Erro"); }
     }
 
     atualizarLista();
