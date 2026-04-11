@@ -10,10 +10,9 @@
     <meta property="og:image" content="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000">
     <meta property="og:url" content="https://site-imobiliaria-marica.vercel.app/">
     <meta property="og:type" content="website">
-    <meta name="theme-color" content="#2c3e50">
 
     <style>
-        /* CONFIGURAÇÃO DO FUNDO (MANTIDO) */
+        /* CONFIGURAÇÃO DO FUNDO */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
@@ -26,50 +25,38 @@
             min-height: 100vh;
         }
 
-        /* --- O NOVO CABEÇALHO "GLASSMORPHISM" (O QUE MUDOU) --- */
+        /* CABEÇALHO PREMIUM GLASSMORPHISM */
         header { 
             text-align: center; 
-            padding: 60px 20px; /* Aumentei o padding para dar mais ar */
-            
-            /* Gradiente suave e fundo translúcido */
+            padding: 60px 20px; 
             background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(26, 37, 47, 0.9));
-            
-            /* Efeito de Vidro Jateado (Blur) - Super moderno */
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
-            
+            -webkit-backdrop-filter: blur(10px);
             color: white; 
-            border-radius: 16px; /* Bordas mais arredondadas */
+            border-radius: 16px; 
             margin-bottom: 30px; 
-            
-            /* Sombra mais suave e espalhada */
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            
-            /* Borda fina branca para o efeito de vidro */
             border: 1px solid rgba(255, 255, 255, 0.1);
-            
-            transition: 0.3s;
         }
         
         header h1 { 
             margin: 0; 
-            font-size: 2.8rem; /* Aumentei um pouco */
-            font-weight: 800; /* Mais negrito */
-            text-transform: uppercase; /* Tudo maiúsculo */
-            letter-spacing: 2px; /* Espaçamento entre letras */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Sombra no texto */
+            font-size: 2.8rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3); 
         }
         
         header p { 
             margin: 15px 0 0; 
             font-size: 1.2rem; 
             opacity: 0.8; 
-            font-weight: 300; /* Mais leve */
+            font-weight: 300; 
             letter-spacing: 1px;
         }
 
-        /* --- RESTO DO CÓDIGO (MANTIDO) --- */
-
+        /* BOTÃO DE CONSULTA */
         .area-consulta { text-align: center; margin: 30px 0; }
         .btn-consulta { 
             background: #25d366; 
@@ -83,7 +70,6 @@
             gap: 12px;
             transition: 0.3s;
             box-shadow: 0 4px 15px rgba(37,211,102,0.3);
-            font-size: 1.1rem;
         }
         .btn-consulta:hover { 
             background: #20b858; 
@@ -92,6 +78,7 @@
         }
         .btn-consulta img { width: 25px; height: 25px; }
 
+        /* FILTROS E REMOÇÃO DAS SETINHAS (FIXED) */
         .filtros-container { 
             background: rgba(255, 255, 255, 0.95);
             max-width: 900px; 
@@ -102,9 +89,36 @@
             display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: center; 
             backdrop-filter: blur(5px);
         }
-        .filtros-container input { padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; flex: 1; min-width: 220px; outline: none; }
-        .btn-limpar { padding: 14px 25px; background: #e74c3c; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
+        .filtros-container input { 
+            padding: 14px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            flex: 1; 
+            min-width: 220px; 
+            outline: none; 
+        }
+
+        /* O Bloco que remove as setas de preço */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        .btn-limpar { 
+            padding: 14px 25px; 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+
+        /* GRID E CARDS */
         .grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; padding-bottom: 50px; }
         .card { background: white; width: 310px; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border: 1px solid #eee; transition: 0.3s; }
         .card img { width: 100%; height: 210px; object-fit: cover; }
