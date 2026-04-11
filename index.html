@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turíbio Imóveis - Maricá</title>
+    <title>Turíbio Imóveis</title>
 
-    <meta property="og:title" content="Turíbio Imóveis - Maricá">
-    <meta property="og:description" content="Encontre sua casa dos sonhos ou agende uma avaliação profissional com quem entende de Maricá.">
+    <meta property="og:title" content="Turíbio Imóveis">
+    <meta property="og:description" content="Encontre sua casa dos sonhos ou agende uma avaliação profissional.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000">
     <meta property="og:url" content="https://site-imobiliaria-marica.vercel.app/">
     <meta property="og:type" content="website">
@@ -78,7 +78,7 @@
         }
         .btn-consulta img { width: 25px; height: 25px; }
 
-        /* FILTROS E REMOÇÃO DAS SETINHAS (FIXED) */
+        /* FILTROS E REMOÇÃO DAS SETINHAS */
         .filtros-container { 
             background: rgba(255, 255, 255, 0.95);
             max-width: 900px; 
@@ -100,7 +100,6 @@
             outline: none; 
         }
 
-        /* O Bloco que remove as setas de preço */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
@@ -135,7 +134,7 @@
 
 <header>
     <h1>Turíbio Imóveis</h1>
-    <p>Sua casa dos sonhos em Maricá está aqui</p>
+    <p>A chave para o seu novo lar está aqui</p>
 </header>
 
 <div class="area-consulta">
@@ -147,7 +146,7 @@
 </div>
 
 <div class="filtros-container">
-    <input type="text" id="buscaTexto" placeholder="🔍 Buscar bairro ou detalhes..." oninput="aplicarFiltros()">
+    <input type="text" id="buscaTexto" placeholder="🔍 Buscar cidade, bairro ou detalhes..." oninput="aplicarFiltros()">
     <input type="number" id="buscaMin" placeholder="R$ Mínimo" oninput="aplicarFiltros()">
     <input type="number" id="buscaMax" placeholder="R$ Máximo" oninput="aplicarFiltros()">
     <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
