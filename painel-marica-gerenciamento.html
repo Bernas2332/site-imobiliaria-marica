@@ -3,207 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin - Turíbio Imóveis</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { background: #f4f7f6; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }
-        .card-admin { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: none; }
-        .preview-img-tabela { width: 60px; height: 45px; object-fit: cover; border-radius: 5px; }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .form-container { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         
-        /* ESTILO DA ÁREA DE PREVIEW (NOVO) */
-        #container-previa { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 10px; 
-            margin-top: 15px; 
-            padding: 10px; 
-            background: #f8f9fa; 
-            border-radius: 10px; 
-            border: 1px dashed #ccc;
-            min-height: 50px;
+        /* ESTILO DA PREVIA COM ORDENAÇÃO */
+        #container-previa { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
+        .preview-item { position: relative; width: 100px; height: 100px; }
+        .mini-previa { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; }
+        
+        .input-ordem {
+            position: absolute; top: -8px; left: -8px; width: 28px; height: 28px;
+            text-align: center; background: #2c3e50; color: white;
+            border: 2px solid white; border-radius: 50%; font-weight: bold; font-size: 14px;
         }
-        .mini-previa { 
-            width: 80px; 
-            height: 80px; 
-            object-fit: cover; 
-            border-radius: 8px; 
-            border: 2px solid white; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-        }
-        .label-fotos { font-weight: bold; color: #444; }
+        
+        button { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #219150; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card-admin mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="fw-bold">Gerenciador de Imóveis</h2>
-                <a href="index.html" class="btn btn-outline-dark">Voltar ao Site</a>
-            </div>
-            <hr>
-            <form id="formImovel">
-                <input type="hidden" id="idImovel" value="0">
-                <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label">Título do Anúncio</label>
-                        <input type="text" id="titulo" class="form-control" required placeholder="Ex: Casa em Itaipuaçu 3 quartos">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Preço (R$)</label>
-                        <input type="number" id="preco" class="form-control" required placeholder="0.00">
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Descrição</label>
-                        <textarea id="descricao" class="form-control" rows="2" required placeholder="Detalhes do imóvel..."></textarea>
-                    </div>
-                    <div class="col-md-9">
-                        <label class="label-fotos">Selecionar Fotos (Múltiplas)</label>
-                        <input type="file" id="fotoInput" class="form-control" multiple accept="image/*" onchange="mostrarPrevia(this)">
-                        
-                        <div id="container-previa">
-                            <small class="text-muted w-100">Nenhuma imagem selecionada</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="ativo" checked>
-                            <label class="form-check-label">Imóvel Ativo no Site</label>
-                        </div>
-                    </div>
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-primary btn-lg px-5">Salvar Imóvel</button>
-                    </div>
-                </div>
-            </form>
-        </div>
 
-        <div class="card-admin">
-            <h4 class="mb-4">Lista de Imóveis</h4>
-            <table class="table align-middle table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Capa</th>
-                        <th>Título</th>
-                        <th>Preço</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabela"></tbody>
-            </table>
-        </div>
-    </div>
+<div class="form-container">
+    <h2>Gerenciar Imóvel</h2>
+    <form id="formImovel">
+        <input type="hidden" id="idImovel" value="0">
+        <label>Título do Imóvel:</label>
+        <input type="text" id="titulo" required placeholder="Ex: Casa em Itaipuaçu">
+        
+        <label>Preço (R$):</label>
+        <input type="number" id="preco" required placeholder="Ex: 450000">
+        
+        <label>Descrição:</label>
+        <textarea id="descricao" rows="4" placeholder="Detalhes do imóvel..."></textarea>
+        
+        <label>Fotos (Selecione todas de uma vez):</label>
+        <input type="file" id="fotos" multiple accept="image/*" onchange="mostrarPrevia(this)">
+        
+        <div id="container-previa"></div>
 
-    <script>
-        const API = "https://api-imobiliaria-marica.onrender.com";
-        const KEY = "MaricaImoveis2026@!";
+        <label style="display: block; margin-top: 15px;">
+            <input type="checkbox" id="ativo" checked style="width: auto;"> Imóvel Ativo
+        </label>
+        
+        <button type="submit">SALVAR IMÓVEL</button>
+    </form>
+</div>
 
-        // --- FUNÇÃO PARA MOSTRAR PREVIEW DAS FOTOS (NOVO) ---
-        function mostrarPrevia(input) {
-            const container = document.getElementById('container-previa');
-            container.innerHTML = ""; // Limpa a área de prévia
+<script>
+    const API = "https://api-imobiliaria-marica.onrender.com";
+    const KEY = "sua_chave_aqui"; // Coloque sua chave de API aqui
+    let arquivosOriginais = [];
 
-            if (input.files && input.files.length > 0) {
-                // Loop por cada arquivo selecionado
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'mini-previa';
-                        container.appendChild(img);
-                    }
-                    
-                    reader.readAsDataURL(file); // Lê o arquivo para gerar a URL de imagem
-                });
+    function mostrarPrevia(input) {
+        const container = document.getElementById('container-previa');
+        container.innerHTML = "";
+        arquivosOriginais = Array.from(input.files);
+
+        arquivosOriginais.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `
+                    <input type="number" class="input-ordem" value="${index + 1}" data-id="${index}">
+                    <img src="${e.target.result}" class="mini-previa">
+                `;
+                container.appendChild(div);
+            }
+            reader.readAsDataURL(file);
+        });
+    }
+
+    document.getElementById('formImovel').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const inputsOrdem = document.querySelectorAll('.input-ordem');
+        let listaOrdenada = [];
+
+        // Lógica CC: Mapeia os arquivos para as novas posições
+        inputsOrdem.forEach(input => {
+            const novaPosicao = parseInt(input.value) - 1;
+            const indexOriginal = input.dataset.id;
+            listaOrdenada[novaPosicao] = arquivosOriginais[indexOriginal];
+        });
+
+        // Remove buracos se o usuário pular números
+        const arquivosParaEnvio = listaOrdenada.filter(f => f !== undefined);
+
+        const fd = new FormData();
+        fd.append("idImovel", document.getElementById('idImovel').value);
+        fd.append("titulo", document.getElementById('titulo').value);
+        fd.append("preco", document.getElementById('preco').value);
+        fd.append("descricao", document.getElementById('descricao').value);
+        fd.append("ativo", document.getElementById('ativo').checked);
+        
+        // Adiciona fotos na ordem correta
+        arquivosParaEnvio.forEach(f => fd.append("fotos", f));
+
+        try {
+            const res = await fetch(`${API}/imoveis/salvar-imovel`, {
+                method: 'POST',
+                headers: { 'X-Api-Key': KEY },
+                body: fd
+            });
+            if(res.ok) {
+                alert("Imóvel salvo com a ordem de fotos atualizada!");
+                location.reload();
             } else {
-                container.innerHTML = '<small class="text-muted w-100">Nenhuma imagem selecionada</small>';
+                alert("Erro ao salvar.");
             }
+        } catch (err) {
+            alert("Erro de conexão com o servidor.");
         }
-
-        async function listar() {
-            try {
-                const res = await fetch(`${API}/imoveis/admin-lista`);
-                const imoveis = await res.json();
-                document.getElementById('corpoTabela').innerHTML = imoveis.map(i => `
-                    <tr>
-                        <td><img src="${i.fotos ? i.fotos.split(',')[0] : ''}" class="preview-img-tabela"></td>
-                        <td><span class="fw-bold">${i.titulo}</span></td>
-                        <td>R$ ${i.preco.toLocaleString('pt-br')}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" onclick="prepararEdicao(${JSON.stringify(i).replace(/"/g, '&quot;')})">Editar</button>
-                            <button class="btn btn-sm btn-danger" onclick="deletar(${i.id})">Excluir</button>
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (e) {
-                console.error("Erro ao listar:", e);
-            }
-        }
-
-        document.getElementById('formImovel').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.innerText = "Salvando...";
-
-            const fd = new FormData();
-            fd.append("idImovel", document.getElementById('idImovel').value);
-            fd.append("titulo", document.getElementById('titulo').value);
-            fd.append("preco", document.getElementById('preco').value);
-            fd.append("descricao", document.getElementById('descricao').value);
-            fd.append("ativo", document.getElementById('ativo').checked);
-            
-            const files = document.getElementById('fotoInput').files;
-            for(let f of files) {
-                fd.append("fotos", f);
-            }
-
-            try {
-                const res = await fetch(`${API}/imoveis/salvar-imovel`, {
-                    method: 'POST',
-                    headers: { 'X-Api-Key': KEY },
-                    body: fd
-                });
-
-                if(res.ok) {
-                    alert("Imóvel salvo com sucesso!");
-                    location.reload();
-                } else {
-                    alert("Erro ao salvar no servidor.");
-                    btn.disabled = false;
-                    btn.innerText = "Salvar Imóvel";
-                }
-            } catch (err) {
-                alert("Erro de conexão.");
-                btn.disabled = false;
-            }
-        };
-
-        function prepararEdicao(i) {
-            document.getElementById('idImovel').value = i.id;
-            document.getElementById('titulo').value = i.titulo;
-            document.getElementById('preco').value = i.preco;
-            document.getElementById('descricao').value = i.descricao;
-            document.getElementById('ativo').checked = i.ativo;
-            
-            // Limpa o input de arquivo e previa ao editar
-            document.getElementById('fotoInput').value = "";
-            document.getElementById('container-previa').innerHTML = '<small class="text-info w-100">Ao salvar sem escolher fotos, as imagens atuais serão mantidas.</small>';
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function deletar(id) {
-            if(confirm("Tem certeza que deseja excluir este imóvel definitivamente?")) {
-                await fetch(`${API}/imoveis/deletar-imovel/${id}`, { 
-                    method: 'DELETE', 
-                    headers: { 'X-Api-Key': KEY } 
-                });
-                listar();
-            }
-        }
-
-        listar();
-    </script>
+    };
+</script>
 </body>
 </html>
