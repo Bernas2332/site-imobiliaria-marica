@@ -8,16 +8,15 @@
     <style>
         :root {
             --primary-yellow: #FFD700;
-            --dark-bg: #121212; /* Cor de fallback */
-            --card-bg: rgba(30, 30, 30, 0.95); /* Levemente transparente */
+            --dark-bg: #121212; 
+            --card-bg: rgba(30, 30, 30, 0.95); 
             --text-gray: #B0B0B0;
-            --background-dim: rgba(0, 0, 0, 0.85); /* Intensidade do escurecimento do fundo */
+            --background-dim: rgba(0, 0, 0, 0.65); /* ALTERADO: De 0.85 para 0.65 (Mais claro) */
         }
 
         body { 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; padding: 15px; 
-            /* IMAGEM DE FUNDO VOLTOU, COM ESCURECIMENTO HEAVY */
             background: linear-gradient(var(--background-dim), var(--background-dim)), 
                         url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000') fixed center/cover;
             color: white;
@@ -221,7 +220,7 @@
 
 <script>
     let imoveis = [];
-    let modalFotoIndex = 0; // Controla a foto atual no modal
+    let modalFotoIndex = 0; 
 
     async function carregar() {
         try {
@@ -233,7 +232,8 @@
 
     function render(lista) {
         document.getElementById('lista').innerHTML = lista.map(i => {
-            const fotos = i.fotos ? i.fotos.split(',') : ['https://picsum.photos/400/300'];
+            // ALTERADO: Adicionado /seed/imovel/ para fixar a imagem de fallback
+            const fotos = i.fotos ? i.fotos.split(',') : ['https://picsum.photos/seed/imovel/400/300'];
             return `
                 <div class="card">
                     <div class="img-container" onclick="nextFotoClick(this, ${i.id}, event)">
@@ -257,7 +257,6 @@
         }).join('');
     }
 
-    // LÓGICA DO CARROSSEL DO CARD PEQUENO
     function mudarFotoSeta(btn, direcao, id, event) {
         event.stopPropagation();
         atualizarCarrossel(btn.closest('.img-container'), direcao, id);
@@ -277,57 +276,14 @@
         document.getElementById(`badge-${id}`).innerText = `${idx+1} / ${imgs.length}`;
     }
 
-    // LÓGICA DO MODAL DE DETALHES
     function abrirModal(id) {
         const imovel = imoveis.find(i => i.id === id);
-        const fotos = imovel.fotos ? imovel.fotos.split(',') : ['https://picsum.photos/800/600'];
-        modalFotoIndex = 0; // Reseta a foto para a primeira
+        // ALTERADO: Adicionado /seed/imovel/ para fixar a imagem de fallback
+        const fotos = imovel.fotos ? imovel.fotos.split(',') : ['https://picsum.photos/seed/imovel/800/600'];
+        modalFotoIndex = 0; 
 
         const html = `
             <div class="modal-grid">
                 <div class="modal-img-container">
                     <img id="modalImg" src="${fotos[0]}" alt="Foto do Imóvel">
                     ${fotos.length > 1 ? `
-                        <button class="modal-seta prev" onclick="mudarFotoModal(-1, ${id})">&#10094;</button>
-                        <button class="modal-seta next" onclick="mudarFotoModal(1, ${id})">&#10095;</button>
-                    ` : ''}
-                </div>
-                <div class="modal-info">
-                    <h2>${imovel.titulo}</h2>
-                    <div class="preco-card">R$ ${imovel.preco.toLocaleString('pt-br')}</div>
-                    <div class="desc-card-full">${imovel.descricao}</div>
-                    <a href="https://wa.me/5521997177214?text=Olá, tenho interesse no imóvel: ${imovel.titulo}" class="whatsapp-btn" target="_blank">Enviar Mensagem pelo WhatsApp</a>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('modalConteudo').innerHTML = html;
-        document.getElementById('modalDetalhes').classList.add('active');
-        document.body.style.overflow = 'hidden'; // Impede o fundo de rolar
-    }
-
-    function mudarFotoModal(direcao, id) {
-        const imovel = imoveis.find(i => i.id === id);
-        const fotos = imovel.fotos.split(',');
-        modalFotoIndex = (modalFotoIndex + direcao + fotos.length) % fotos.length;
-        document.getElementById('modalImg').src = fotos[modalFotoIndex];
-    }
-
-    function fecharModal(e) {
-        // Se foi passado um evento (clique fora), ignora se não for no overlay
-        if(e && e.target !== document.getElementById('modalDetalhes')) return;
-        document.getElementById('modalDetalhes').classList.remove('active');
-        document.body.style.overflow = 'auto'; // Devolve o rolamento do fundo
-    }
-
-    function filtrar() {
-        const t = document.getElementById('buscaTexto').value.toLowerCase();
-        const min = parseFloat(document.getElementById('buscaMin').value) || 0;
-        const max = parseFloat(document.getElementById('buscaMax').value) || Infinity;
-        render(imoveis.filter(i => (i.titulo.toLowerCase().includes(t)) && i.preco >= min && i.preco <= max));
-    }
-
-    carregar();
-</script>
-</body>
-</html>
