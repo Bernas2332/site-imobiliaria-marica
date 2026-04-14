@@ -287,3 +287,45 @@
                 <div class="modal-img-container">
                     <img id="modalImg" src="${fotos[0]}" alt="Foto do Imóvel">
                     ${fotos.length > 1 ? `
+                        <button class="modal-seta prev" onclick="mudarFotoModal(-1, ${id})">&#10094;</button>
+                        <button class="modal-seta next" onclick="mudarFotoModal(1, ${id})">&#10095;</button>
+                    ` : ''}
+                </div>
+                <div class="modal-info">
+                    <h2>${imovel.titulo}</h2>
+                    <div class="preco-card">R$ ${imovel.preco.toLocaleString('pt-br')}</div>
+                    <div class="desc-card-full">${imovel.descricao}</div>
+                    <a href="https://wa.me/5521997177214?text=Olá, tenho interesse no imóvel: ${imovel.titulo}" class="whatsapp-btn" target="_blank">Enviar Mensagem pelo WhatsApp</a>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('modalConteudo').innerHTML = html;
+        document.getElementById('modalDetalhes').classList.add('active');
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function mudarFotoModal(direcao, id) {
+        const imovel = imoveis.find(i => i.id === id);
+        const fotos = imovel.fotos ? imovel.fotos.split(',') : ['https://picsum.photos/seed/imovel/800/600'];
+        modalFotoIndex = (modalFotoIndex + direcao + fotos.length) % fotos.length;
+        document.getElementById('modalImg').src = fotos[modalFotoIndex];
+    }
+
+    function fecharModal(e) {
+        if(e && e.target !== document.getElementById('modalDetalhes')) return;
+        document.getElementById('modalDetalhes').classList.remove('active');
+        document.body.style.overflow = 'auto'; 
+    }
+
+    function filtrar() {
+        const t = document.getElementById('buscaTexto').value.toLowerCase();
+        const min = parseFloat(document.getElementById('buscaMin').value) || 0;
+        const max = parseFloat(document.getElementById('buscaMax').value) || Infinity;
+        render(imoveis.filter(i => (i.titulo.toLowerCase().includes(t)) && i.preco >= min && i.preco <= max));
+    }
+
+    carregar();
+</script>
+</body>
+</html>
