@@ -3,182 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turíbio Imóveis | Maricá & Região</title>
-
+    <title>Turíbio Imóveis | Maricá</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; 
-            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000');
-            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;
+        :root {
+            --primary-yellow: #FFD700;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --text-gray: #B0B0B0;
         }
 
-        /* BANNER COMPACTO */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; padding: 15px; 
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* CABEÇALHO BLACK & GOLD */
         header { 
-            text-align: center; padding: 20px; 
-            background: linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(26, 37, 47, 0.95));
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            color: white; border-radius: 15px; margin-bottom: 20px; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 30px; 
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            border-bottom: 3px solid var(--primary-yellow);
+            border-radius: 15px; margin-bottom: 25px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         header h1 { 
-            margin: 0; font-size: 3rem; font-weight: 800; 
-            text-transform: uppercase; letter-spacing: 3px; color: #fff;
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.8); line-height: 1;
+            font-size: 3rem; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 4px; 
+            color: var(--primary-yellow);
+            margin: 0; line-height: 1;
+            text-shadow: 2px 2px 0px rgba(0,0,0,1);
         }
 
-        .logo-central {
-            width: 200px; height: auto; margin-top: 15px; margin-bottom: 5px;
-            filter: drop-shadow(0px 0px 15px rgba(255, 215, 0, 0.5));
+        .logo-central { 
+            width: 200px; margin: 15px 0; 
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
         }
 
-        header p { margin: 0; font-size: 1.1rem; opacity: 0.9; font-style: italic; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+        header p { 
+            color: var(--text-gray); font-style: italic; margin-top: -5px; 
+            letter-spacing: 1px;
+        }
 
-        /* FILTROS SEM SETINHAS */
+        /* FILTROS DARK */
         .filtros-container { 
-            background: rgba(255, 255, 255, 0.95); max-width: 900px; margin: 0 auto 20px auto; 
-            padding: 15px; border-radius: 12px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            background: var(--card-bg); max-width: 850px; margin: 0 auto 30px; 
+            padding: 15px; border-radius: 12px; border: 1px solid #333;
+            display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
         }
-        .filtros-container input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1; min-width: 180px; outline: none; }
-        
-        /* REMOVER SETINHAS DE PREÇO */
+
+        .filtros-container input { 
+            background: #2D2D2D; border: 1px solid #444; color: white;
+            padding: 10px; border-radius: 8px; flex: 1; min-width: 160px; outline: none;
+        }
+        .filtros-container input::placeholder { color: #666; }
+        .filtros-container input:focus { border-color: var(--primary-yellow); }
+
+        /* REMOVE SETINHAS DO PREÇO */
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
 
-        /* GRID E CARDS */
-        .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .card { background: white; width: 300px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: 0.3s ease; border: none; }
+        /* CARDS DARK MODE */
+        .grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; }
         
-        /* CONTAINER DA IMAGEM */
-        .img-container { position: relative; width: 100%; height: 200px; overflow: hidden; background: #eee; cursor: pointer; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .card { 
+            background: var(--card-bg); width: 310px; border-radius: 18px; 
+            overflow: hidden; border: 1px solid #333; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary-yellow); }
+
+        .img-container { position: relative; height: 210px; background: #000; cursor: pointer; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; display: none; opacity: 0.85; transition: 0.3s; }
         .img-container img.active { display: block; }
+        .card:hover .img-container img { opacity: 1; }
 
-        /* INDICADOR DE FOTOS (NUMÉRICO) */
-        .foto-badge {
-            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6);
-            color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; z-index: 5;
+        .foto-badge { 
+            position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); 
+            color: var(--primary-yellow); padding: 3px 10px; border-radius: 6px; 
+            font-size: 11px; font-weight: bold; border: 1px solid var(--primary-yellow);
         }
 
-        /* PONTINHOS (PAGINAÇÃO) */
-        .dots-container {
-            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 5px; z-index: 5;
+        .dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; }
+        .dot.active { background: var(--primary-yellow); transform: scale(1.3); }
+
+        /* CONTEÚDO DO CARD */
+        .info { padding: 20px; text-align: left; }
+        .titulo-card { color: white; font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+        .preco-card { color: var(--primary-yellow); font-size: 1.4rem; font-weight: 800; }
+        .desc-card { color: var(--text-gray); font-size: 0.85rem; height: 40px; overflow: hidden; margin-top: 10px; }
+
+        .whatsapp-btn { 
+            display: block; text-align: center; background: var(--primary-yellow); 
+            color: black; text-decoration: none; padding: 12px; border-radius: 10px; 
+            font-weight: 800; margin-top: 15px; text-transform: uppercase;
+            transition: 0.3s; border: none;
         }
-        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
-        .dot.active { background: #fff; width: 12px; border-radius: 4px; }
-
-        /* SETAS (SÓ APARECEM NO DESKTOP) */
-        .seta-card { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; opacity: 0; transition: 0.3s; z-index: 10; }
-        .card:hover .seta-card { opacity: 1; }
-        .seta-prev { left: 8px; } .seta-next { right: 8px; }
-
-        .info { padding: 15px; }
-        .titulo-card { font-size: 1.1rem; font-weight: bold; color: #333; }
-        .preco-card { font-size: 1.3rem; color: #27ae60; font-weight: bold; margin: 5px 0; }
-        .desc-card { font-size: 0.85rem; color: #666; height: 38px; overflow: hidden; }
-        .whatsapp-btn { display: block; text-align: center; background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+        .whatsapp-btn:hover { background: #e6c200; color: black; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Turíbio Imóveis</h1>
-    <img src="logo.svg" alt="Logo Turíbio Imóveis" class="logo-central">
-    <p>A chave para o seu novo lar está aqui</p>
+    <img src="logo.svg" alt="Logo Turíbio" class="logo-central">
+    <p>A CHAVE PARA O SEU NOVO LAR</p>
 </header>
 
 <div class="filtros-container">
-    <input type="text" id="buscaTexto" placeholder="🔍 Local, bairro ou detalhes..." oninput="aplicarFiltros()">
-    <input type="number" id="buscaMin" placeholder="R$ Mínimo" oninput="aplicarFiltros()">
-    <input type="number" id="buscaMax" placeholder="R$ Máximo" oninput="aplicarFiltros()">
+    <input type="text" id="buscaTexto" placeholder="🔍 Local, bairro..." oninput="filtrar()">
+    <input type="number" id="buscaMin" placeholder="R$ Mínimo" oninput="filtrar()">
+    <input type="number" id="buscaMax" placeholder="R$ Máximo" oninput="filtrar()">
 </div>
 
 <div class="grid" id="lista"></div>
 
 <script>
-    let imoveisGlobais = [];
-    const API_URL = "https://api-imobiliaria-marica.onrender.com/imoveis";
-
-    async function carregarBanco() {
+    let imoveis = [];
+    async function carregar() {
         try {
-            const res = await fetch(API_URL);
-            imoveisGlobais = await res.json();
-            renderizarCards(imoveisGlobais);
-        } catch (e) {
-            document.getElementById('lista').innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar dados.</p>";
-        }
+            const res = await fetch("https://api-imobiliaria-marica.onrender.com/imoveis");
+            imoveis = await res.json();
+            render(imoveis);
+        } catch(e) { console.error(e); }
     }
 
-    function renderizarCards(lista) {
-        const grid = document.getElementById('lista');
-        grid.innerHTML = lista.map(i => {
-            const fotosArr = i.fotos ? i.fotos.split(',') : ['https://via.placeholder.com/400x300'];
-            const precoFormatado = i.preco ? i.preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) : "Consulte";
-            
+    function render(lista) {
+        document.getElementById('lista').innerHTML = lista.map(i => {
+            const fotos = i.fotos ? i.fotos.split(',') : ['https://picsum.photos/400/300'];
             return `
                 <div class="card">
-                    <div class="img-container" id="img-container-${i.id}" onclick="mudarFoto(${i.id}, 1, event)">
-                        <div class="foto-badge" id="badge-${i.id}">1 / ${fotosArr.length}</div>
-                        ${fotosArr.map((f, idx) => `<img src="${f}" class="${idx === 0 ? 'active' : ''}">`).join('')}
-                        
-                        <div class="dots-container" id="dots-${i.id}">
-                            ${fotosArr.map((_, idx) => `<div class="dot ${idx === 0 ? 'active' : ''}"></div>`).join('')}
-                        </div>
-
-                        ${fotosArr.length > 1 ? `
-                            <button class="seta-card seta-prev" onclick="mudarFoto(${i.id}, -1, event)">&#10094;</button>
-                            <button class="seta-card seta-next" onclick="mudarFoto(${i.id}, 1, event)">&#10095;</button>
-                        ` : ''}
+                    <div class="img-container" onclick="nextFoto(this, ${i.id})">
+                        <div class="foto-badge" id="badge-${i.id}">1 / ${fotos.length}</div>
+                        ${fotos.map((f,idx) => `<img src="${f}" class="${idx===0?'active':''}" data-id="${i.id}">`).join('')}
+                        <div class="dots">${fotos.map((_,idx)=>`<div class="dot ${idx===0?'active':''}"></div>`).join('')}</div>
                     </div>
                     <div class="info">
                         <div class="titulo-card">${i.titulo}</div>
-                        <div class="preco-card">${precoFormatado}</div>
+                        <div class="preco-card">R$ ${i.preco.toLocaleString('pt-br')}</div>
                         <div class="desc-card">${i.descricao}</div>
-                        <a href="https://wa.me/5521997177214?text=Interesse: ${i.titulo}" class="whatsapp-btn" target="_blank">WhatsApp</a>
+                        <a href="https://wa.me/5521997177214?text=Interesse no imóvel: ${i.titulo}" class="whatsapp-btn" target="_blank">Ver Detalhes</a>
                     </div>
-                </div>
-            `;
+                </div>`;
         }).join('');
     }
 
-    function mudarFoto(idImovel, direcao, event) {
-        event.stopPropagation();
-        const container = document.getElementById(`img-container-${idImovel}`);
-        const imagens = container.querySelectorAll('img');
+    function nextFoto(container, id) {
+        const imgs = container.querySelectorAll('img');
         const dots = container.querySelectorAll('.dot');
-        const badge = document.getElementById(`badge-${idImovel}`);
-        
-        let atual = 0;
-        imagens.forEach((img, index) => {
-            if (img.classList.contains('active')) atual = index;
-            img.classList.remove('active');
-            if(dots[index]) dots[index].classList.remove('active');
-        });
-
-        let proximo = (atual + direcao + imagens.length) % imagens.length;
-        
-        imagens[proximo].classList.add('active');
-        if(dots[proximo]) dots[proximo].classList.add('active');
-        badge.innerText = `${proximo + 1} / ${imagens.length}`;
+        let idx = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+        imgs[idx].classList.remove('active');
+        dots[idx].classList.remove('active');
+        idx = (idx + 1) % imgs.length;
+        imgs[idx].classList.add('active');
+        dots[idx].classList.add('active');
+        document.getElementById(`badge-${id}`).innerText = `${idx+1} / ${imgs.length}`;
     }
 
-    function aplicarFiltros() {
-        const txt = document.getElementById('buscaTexto').value.toLowerCase();
+    function filtrar() {
+        const t = document.getElementById('buscaTexto').value.toLowerCase();
         const min = parseFloat(document.getElementById('buscaMin').value) || 0;
         const max = parseFloat(document.getElementById('buscaMax').value) || Infinity;
-        const filtrados = imoveisGlobais.filter(i => {
-            const match = i.titulo.toLowerCase().includes(txt) || i.descricao.toLowerCase().includes(txt);
-            return match && (i.preco || 0) >= min && (i.preco || 0) <= max;
-        });
-        renderizarCards(filtrados);
+        render(imoveis.filter(i => (i.titulo.toLowerCase().includes(t)) && i.preco >= min && i.preco <= max));
     }
-
-    carregarBanco();
+    carregar();
 </script>
 </body>
 </html>
