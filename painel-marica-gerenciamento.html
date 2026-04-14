@@ -104,7 +104,25 @@
         let listaArquivos = [];
 
         function adicionarFotos(files) {
-            Array.from(files).forEach(f => listaArquivos.push(f));
+            const formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+            const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
+
+            Array.from(files).forEach(f => {
+                // Valida formato
+                if (!formatosPermitidos.includes(f.type)) {
+                    alert(`O arquivo ${f.name} não é uma imagem válida (Use JPG, PNG ou WebP).`);
+                    return;
+                }
+
+                // Valida tamanho
+                if (f.size > tamanhoMaximo) {
+                    alert(`A imagem ${f.name} é muito pesada! O limite é 5MB.`);
+                    return;
+                }
+
+                listaArquivos.push(f);
+            });
+            
             document.getElementById('fotoInput').value = ""; // Reseta o input
             renderizar();
         }
