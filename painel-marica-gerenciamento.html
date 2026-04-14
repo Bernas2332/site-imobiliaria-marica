@@ -96,34 +96,32 @@
     </div>
 
     <script>
-        // CONFIGURAÇÕES DA API
         const API = "https://api-imobiliaria-marica.onrender.com";
         const KEY = "MaricaImoveis2026@!";
         
-        // MEMÓRIA DAS FOTOS
         let listaArquivos = [];
 
         function adicionarFotos(files) {
             const formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
-            const tamanhoMaximo = 5 * 1024 * 1024; // 5MB
+            
+            // LIMITE ALTERADO PARA 2MB AQUI
+            const tamanhoMaximo = 2 * 1024 * 1024; 
 
             Array.from(files).forEach(f => {
-                // Valida formato
                 if (!formatosPermitidos.includes(f.type)) {
                     alert(`O arquivo ${f.name} não é uma imagem válida (Use JPG, PNG ou WebP).`);
                     return;
                 }
 
-                // Valida tamanho
                 if (f.size > tamanhoMaximo) {
-                    alert(`A imagem ${f.name} é muito pesada! O limite é 5MB.`);
+                    alert(`A imagem ${f.name} é muito pesada! O limite é 2MB.`);
                     return;
                 }
 
                 listaArquivos.push(f);
             });
             
-            document.getElementById('fotoInput').value = ""; // Reseta o input
+            document.getElementById('fotoInput').value = ""; 
             renderizar();
         }
 
@@ -163,7 +161,6 @@
             });
         }
 
-        // SALVAR / ENVIAR
         document.getElementById('formImovel').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSalvar');
@@ -199,7 +196,6 @@
             }
         };
 
-        // CARREGAR LISTA
         async function listar() {
             try {
                 const res = await fetch(`${API}/imoveis/admin-lista`);
@@ -227,7 +223,6 @@
             }
         }
 
-        // FUNÇÃO DE EDITAR QUE HAVIA SIDO REMOVIDA
         function prepararEdicao(i) {
             document.getElementById('idImovel').value = i.id;
             document.getElementById('titulo').value = i.titulo;
@@ -236,15 +231,12 @@
             document.getElementById('descricao').value = i.descricao;
             document.getElementById('ativo').checked = i.ativo;
             
-            // Limpa as fotos novas e mostra aviso
             listaArquivos = [];
             document.getElementById('container-previa').innerHTML = '<p class="text-info w-100 text-center mt-2">Ao adicionar novas fotos, as antigas serão substituídas no servidor.</p>';
             
-            // Rola a tela para cima para o amigo ver o formulário
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // DELETAR
         async function deletar(id) {
             if(confirm("Tem certeza que deseja excluir este imóvel permanentemente?")) {
                 await fetch(`${API}/imoveis/deletar-imovel/${id}`, { method: 'DELETE', headers: { 'X-Api-Key': KEY } });
@@ -252,7 +244,6 @@
             }
         }
 
-        // Inicia a tabela
         listar();
     </script>
 </body>
