@@ -11,7 +11,8 @@
             --dark-bg: #121212; 
             --card-bg: rgba(30, 30, 30, 0.95); 
             --text-gray: #B0B0B0;
-            --background-dim: rgba(0, 0, 0, 0.65); /* ALTERADO: De 0.85 para 0.65 (Mais claro) */
+            /* Fundo clareado: de 0.65 para 0.45 */
+            --background-dim: rgba(0, 0, 0, 0.45); 
         }
 
         body { 
@@ -48,10 +49,10 @@
 
         header p { color: var(--text-gray); font-style: italic; margin-top: -5px; letter-spacing: 1px; }
 
-        /* BOTÃO DE CONSULTORIA NO HEADER */
+        /* BOTÃO DE CONSULTORIA COM WHATSAPP */
         .btn-consultoria {
             margin-top: 15px;
-            padding: 10px 25px;
+            padding: 12px 25px;
             border: 2px solid var(--primary-yellow);
             color: var(--primary-yellow);
             border-radius: 8px;
@@ -60,6 +61,9 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .btn-consultoria:hover {
             background: var(--primary-yellow);
@@ -69,19 +73,18 @@
 
         /* FILTROS DARK */
         .filtros-container { 
-            background: var(--card-bg); max-width: 850px; margin: 0 auto 30px; 
+            background: var(--card-bg); max-width: 950px; margin: 0 auto 30px; 
             padding: 15px; border-radius: 12px; border: 1px solid #333;
             display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
             backdrop-filter: blur(5px);
         }
-        .filtros-container input { 
+        .filtros-container input, .filtros-container select { 
             background: #2D2D2D; border: 1px solid #444; color: white;
-            padding: 10px; border-radius: 8px; flex: 1; min-width: 160px; outline: none;
+            padding: 10px; border-radius: 8px; flex: 1; min-width: 150px; outline: none;
         }
         .filtros-container input::placeholder { color: #666; }
-        .filtros-container input:focus { border-color: var(--primary-yellow); }
+        .filtros-container input:focus, .filtros-container select:focus { border-color: var(--primary-yellow); }
 
-        /* SEM SETINHAS DE PREÇO */
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
@@ -94,8 +97,20 @@
             overflow: hidden; border: 1px solid #333; transition: 0.3s;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             backdrop-filter: blur(5px);
+            position: relative;
         }
         .card:hover { transform: translateY(-10px); border-color: var(--primary-yellow); }
+
+        /* BADGE VENDA/LOCAÇÃO */
+        .tipo-badge {
+            position: absolute; top: 12px; left: 12px; 
+            padding: 4px 12px; border-radius: 6px; 
+            font-size: 11px; font-weight: 900; z-index: 5;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .badge-venda { background: var(--primary-yellow); color: black; }
+        .badge-locacao { background: #17a2b8; color: white; }
 
         .img-container { position: relative; height: 210px; background: #000; cursor: pointer; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; display: none; opacity: 0.85; transition: 0.3s; }
@@ -136,7 +151,7 @@
         }
         .btn-detalhes:hover { background: #444; color: var(--primary-yellow); border-color: var(--primary-yellow); }
 
-        /* MODAL DE DETALHES (OVERLAY) */
+        /* MODAL DE DETALHES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 1000;
@@ -181,7 +196,6 @@
         }
         .whatsapp-btn:hover { background: #e6c200; color: black; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
 
-        /* SETAS DO MODAL */
         .modal-seta {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: rgba(0,0,0,0.8); color: var(--primary-yellow);
@@ -200,11 +214,24 @@
     <h1>Turíbio Imóveis</h1>
     <img src="logo.svg" alt="Logo Turíbio" class="logo-central">
     <p>A CHAVE PARA O SEU NOVO LAR</p>
-    <a href="https://wa.me/5521997177214?text=Olá, gostaria de agendar uma consultoria imobiliária." class="btn-consultoria" target="_blank">Agendar Consultoria</a>
+    
+    <a href="https://wa.me/5521997177214?text=Olá, gostaria de agendar uma consultoria imobiliária." class="btn-consultoria" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+        </svg>
+        Consultoria | (21) 99717-7214
+    </a>
 </header>
 
 <div class="filtros-container">
     <input type="text" id="buscaTexto" placeholder="🔍 Local, bairro..." oninput="filtrar()">
+    
+    <select id="buscaTipo" onchange="filtrar()">
+        <option value="todos">Todos os Tipos</option>
+        <option value="venda">Comprar (Venda)</option>
+        <option value="locacao">Alugar (Locação)</option>
+    </select>
+
     <input type="number" id="buscaMin" placeholder="R$ Mínimo" oninput="filtrar()">
     <input type="number" id="buscaMax" placeholder="R$ Máximo" oninput="filtrar()">
 </div>
@@ -232,10 +259,17 @@
 
     function render(lista) {
         document.getElementById('lista').innerHTML = lista.map(i => {
-            // ALTERADO: Adicionado /seed/imovel/ para fixar a imagem de fallback
             const fotos = i.fotos ? i.fotos.split(',') : ['https://picsum.photos/seed/imovel/400/300'];
+            
+            // Lógica para definir Venda ou Locação (Fallback para 'venda' se a API não mandar)
+            const tipoImovel = (i.tipo || 'venda').toLowerCase();
+            const classeBadge = tipoImovel === 'locacao' ? 'badge-locacao' : 'badge-venda';
+            const textoBadge = tipoImovel === 'locacao' ? 'LOCAÇÃO' : 'VENDA';
+
             return `
                 <div class="card">
+                    <div class="tipo-badge ${classeBadge}">${textoBadge}</div>
+
                     <div class="img-container" onclick="nextFotoClick(this, ${i.id}, event)">
                         <div class="foto-badge" id="badge-${i.id}">1 / ${fotos.length}</div>
                         ${fotos.map((f,idx) => `<img src="${f}" class="${idx===0?'active':''}" data-id="${i.id}">`).join('')}
@@ -249,7 +283,7 @@
                     </div>
                     <div class="info">
                         <div class="titulo-card">${i.titulo}</div>
-                        <div class="preco-card">R$ ${i.preco.toLocaleString('pt-br')}</div>
+                        <div class="preco-card">R$ ${i.preco.toLocaleString('pt-br')} ${tipoImovel === 'locacao' ? '<span style="font-size:14px; color:#B0B0B0">/mês</span>' : ''}</div>
                         <div class="desc-card">${i.descricao}</div>
                         <button class="btn-detalhes" onclick="abrirModal(${i.id})">Ver Detalhes</button>
                     </div>
@@ -278,9 +312,10 @@
 
     function abrirModal(id) {
         const imovel = imoveis.find(i => i.id === id);
-        // ALTERADO: Adicionado /seed/imovel/ para fixar a imagem de fallback
         const fotos = imovel.fotos ? imovel.fotos.split(',') : ['https://picsum.photos/seed/imovel/800/600'];
         modalFotoIndex = 0; 
+        
+        const tipoImovel = (imovel.tipo || 'venda').toLowerCase();
 
         const html = `
             <div class="modal-grid">
@@ -293,7 +328,7 @@
                 </div>
                 <div class="modal-info">
                     <h2>${imovel.titulo}</h2>
-                    <div class="preco-card">R$ ${imovel.preco.toLocaleString('pt-br')}</div>
+                    <div class="preco-card">R$ ${imovel.preco.toLocaleString('pt-br')} ${tipoImovel === 'locacao' ? '<small>/mês</small>' : ''}</div>
                     <div class="desc-card-full">${imovel.descricao}</div>
                     <a href="https://wa.me/5521997177214?text=Olá, tenho interesse no imóvel: ${imovel.titulo}" class="whatsapp-btn" target="_blank">Enviar Mensagem pelo WhatsApp</a>
                 </div>
@@ -320,9 +355,18 @@
 
     function filtrar() {
         const t = document.getElementById('buscaTexto').value.toLowerCase();
+        const tipoSelecionado = document.getElementById('buscaTipo').value;
         const min = parseFloat(document.getElementById('buscaMin').value) || 0;
         const max = parseFloat(document.getElementById('buscaMax').value) || Infinity;
-        render(imoveis.filter(i => (i.titulo.toLowerCase().includes(t)) && i.preco >= min && i.preco <= max));
+        
+        render(imoveis.filter(i => {
+            const tipoImovel = (i.tipo || 'venda').toLowerCase();
+            const textoBate = i.titulo.toLowerCase().includes(t);
+            const tipoBate = tipoSelecionado === 'todos' || tipoImovel === tipoSelecionado;
+            const precoBate = i.preco >= min && i.preco <= max;
+            
+            return textoBate && tipoBate && precoBate;
+        }));
     }
 
     carregar();
