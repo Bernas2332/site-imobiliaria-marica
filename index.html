@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turíbio Imóveis | Maricá</title>
+    <title>Turíbio Imóveis | Maricá & Região</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         :root {
             --primary-yellow: #FFD700;
-            --dark-bg: #121212;
-            --card-bg: #1E1E1E;
+            --dark-bg: #121212; /* Cor de fallback */
+            --card-bg: rgba(30, 30, 30, 0.95); /* Levemente transparente */
             --text-gray: #B0B0B0;
+            --background-dim: rgba(0, 0, 0, 0.85); /* Intensidade do escurecimento do fundo */
         }
 
         body { 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; padding: 15px; 
-            background: var(--dark-bg);
+            /* IMAGEM DE FUNDO VOLTOU, COM ESCURECIMENTO HEAVY */
+            background: linear-gradient(var(--background-dim), var(--background-dim)), 
+                        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2000') fixed center/cover;
             color: white;
             min-height: 100vh;
         }
@@ -70,6 +73,7 @@
             background: var(--card-bg); max-width: 850px; margin: 0 auto 30px; 
             padding: 15px; border-radius: 12px; border: 1px solid #333;
             display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+            backdrop-filter: blur(5px);
         }
         .filtros-container input { 
             background: #2D2D2D; border: 1px solid #444; color: white;
@@ -90,6 +94,7 @@
             background: var(--card-bg); width: 310px; border-radius: 18px; 
             overflow: hidden; border: 1px solid #333; transition: 0.3s;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
         }
         .card:hover { transform: translateY(-10px); border-color: var(--primary-yellow); }
 
@@ -146,6 +151,7 @@
             border-radius: 15px; width: 95%; max-width: 900px; max-height: 90vh;
             overflow-y: auto; position: relative; padding: 25px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
         }
         
         .modal-close {
