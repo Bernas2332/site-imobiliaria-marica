@@ -101,25 +101,71 @@
         
         let listaArquivos = [];
 
-        function adicionarFotos(files) {
-            const formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
-            
-            // LIMITE ALTERADO PARA 2MB AQUI
-            const tamanhoMaximo = 2 * 1024 * 1024; 
+        // Função de compressão de imagem via Canvas
+        async function comprimirImagem(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
 
-            Array.from(files).forEach(f => {
+                        const MAX_WIDTH = 1280;
+                        let canvasWidth = img.width;
+                        let canvasHeight = img.height;
+
+                        if (img.width > MAX_WIDTH) {
+                            const scaleSize = MAX_WIDTH / img.width;
+                            canvasWidth = MAX_WIDTH;
+                            canvasHeight = img.height * scaleSize;
+                        }
+
+                        canvas.width = canvasWidth;
+                        canvas.height = canvasHeight;
+
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        canvas.toBlob((blob) => {
+                            const compressedFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            resolve(compressedFile);
+                        }, 'image/jpeg', 0.7); 
+                    };
+                };
+            });
+        }
+
+        async function adicionarFotos(files) {
+            const formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+            const btn = document.getElementById('btnSalvar');
+            
+            // Trava o botão enquanto comprime as fotos
+            btn.disabled = true;
+            btn.innerText = "Processando fotos...";
+
+            for (const f of Array.from(files)) {
                 if (!formatosPermitidos.includes(f.type)) {
                     alert(`O arquivo ${f.name} não é uma imagem válida (Use JPG, PNG ou WebP).`);
-                    return;
+                    continue; // Pula para o próximo arquivo em vez de parar tudo
                 }
 
-                if (f.size > tamanhoMaximo) {
-                    alert(`A imagem ${f.name} é muito pesada! O limite é 2MB.`);
-                    return;
+                // Se a foto for maior que 1MB, ela é comprimida
+                if (f.size > 1 * 1024 * 1024) {
+                    const fotoComprimida = await comprimirImagem(f);
+                    listaArquivos.push(fotoComprimida);
+                } else {
+                    listaArquivos.push(f);
                 }
-
-                listaArquivos.push(f);
-            });
+            }
+            
+            // Libera o botão após o processamento
+            btn.disabled = false;
+            btn.innerText = "Salvar Imóvel";
             
             document.getElementById('fotoInput').value = ""; 
             renderizar();
