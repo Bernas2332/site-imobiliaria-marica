@@ -2,82 +2,77 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Turíbio Imóveis</title>
+    <title>Painel de Administração - Turíbio Imóveis</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body { background: #f4f7f6; padding: 40px 0; font-family: 'Segoe UI', sans-serif; }
-        .card-admin { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: none; }
-        
-        .upload-zone {
-            border: 2px dashed #007bff; border-radius: 12px; padding: 25px;
-            text-align: center; background: #f8f9fa; cursor: pointer; transition: 0.3s;
-        }
-        .upload-zone:hover { background: #eef6ff; }
-
-        #container-previa { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
-        
-        .foto-wrapper {
-            position: relative; width: 120px; background: #fff;
-            padding: 5px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .foto-wrapper img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; }
-        
-        .capa-badge {
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            background: #ffc107; color: #000; font-weight: bold; font-size: 10px;
-            padding: 2px 8px; border-radius: 10px; z-index: 10;
-        }
-
-        .controles-foto { display: flex; justify-content: space-between; margin-top: 8px; gap: 2px; }
-        .btn-ctrl { padding: 2px 5px; font-size: 12px; }
-        .btn-del { background: #dc3545; color: white; border: none; border-radius: 4px; }
-        
-        .preview-img-tabela { width: 50px; height: 35px; object-fit: cover; border-radius: 4px; }
+        .card-admin { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: none; margin-bottom: 30px; }
+        .preview-img-tabela { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; }
+        .badge-tipo { font-size: 11px; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .bg-venda { background-color: #ffc107; color: #000; }
+        .bg-locacao { background-color: #17a2b8; color: #fff; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card-admin mb-4">
-            <h2 class="fw-bold mb-4">Gerenciar Imóvel</h2>
+        <div class="card-admin">
+            <h2 class="fw-bold mb-4">Gerir Imóvel</h2>
             <form id="formImovel">
                 <input type="hidden" id="idImovel" value="0">
                 <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label">Título</label>
-                        <input type="text" id="titulo" class="form-control" required>
+                    
+                    <div class="col-md-5">
+                        <label class="form-label">Título do Anúncio</label>
+                        <input type="text" id="titulo" class="form-control" required placeholder="Ex: Casa duplex 3 quartos">
                     </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Negócio</label>
+                        <select id="tipo" class="form-select" required>
+                            <option value="venda">Venda</option>
+                            <option value="locacao">Locação</option>
+                        </select>
+                    </div>
+
                     <div class="col-md-4">
                         <label class="form-label">Preço (R$)</label>
-                        <input type="number" id="preco" class="form-control" required>
+                        <input type="number" id="preco" class="form-control" required placeholder="0.00">
                     </div>
+
                     <div class="col-12">
                         <label class="form-label">Descrição</label>
-                        <textarea id="descricao" class="form-control" rows="2" required></textarea>
+                        <textarea id="descricao" class="form-control" rows="3" required></textarea>
                     </div>
 
                     <div class="col-12">
-                        <div class="upload-zone" onclick="document.getElementById('fotoInput').click()">
-                            <span class="fw-bold text-primary">+ Adicionar Fotos</span>
-                            <input type="file" id="fotoInput" hidden multiple accept="image/*" onchange="adicionarFotos(this.files)">
-                        </div>
-                        <div id="container-previa"></div>
+                        <label class="form-label fw-bold">Fotos do Imóvel</label>
+                        <input type="file" id="fotoInput" class="form-control" multiple accept="image/*">
+                        <small class="text-muted">Seleciona todas as fotos de uma vez. Para substituir, basta anexar novamente.</small>
                     </div>
 
-                    <div class="col-12 text-end">
-                        <div class="form-check d-inline-block me-3">
+                    <div class="col-12 text-end mt-4">
+                        <div class="form-check d-inline-block me-4">
                             <input class="form-check-input" type="checkbox" id="ativo" checked>
-                            <label class="form-check-label">Ativo</label>
+                            <label class="form-check-label">Publicar agora</label>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg">Salvar Imóvel</button>
+                        <button type="submit" id="btnSalvar" class="btn btn-primary btn-lg px-5">Salvar Imóvel</button>
                     </div>
                 </div>
             </form>
         </div>
 
         <div class="card-admin">
-            <h4 class="mb-3">Lista de Imóveis</h4>
+            <h4 class="mb-3">Imóveis Publicados</h4>
             <table class="table align-middle">
-                <thead class="table-light"><tr><th>Capa</th><th>Título</th><th>Preço</th><th>Ações</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Tipo</th>
+                        <th>Título</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
                 <tbody id="corpoTabela"></tbody>
             </table>
         </div>
@@ -86,98 +81,90 @@
     <script>
         const API = "https://api-imobiliaria-marica.onrender.com";
         const KEY = "MaricaImoveis2026@!";
-        let listaArquivos = [];
-
-        function adicionarFotos(files) {
-            Array.from(files).forEach(f => listaArquivos.push(f));
-            document.getElementById('fotoInput').value = "";
-            renderizar();
-        }
-
-        function mover(index, direcao) {
-            const novaPos = index + direcao;
-            if (novaPos >= 0 && novaPos < listaArquivos.length) {
-                const temp = listaArquivos[index];
-                listaArquivos[index] = listaArquivos[novaPos];
-                listaArquivos[novaPos] = temp;
-                renderizar();
-            }
-        }
-
-        function remover(index) {
-            listaArquivos.splice(index, 1);
-            renderizar();
-        }
-
-        function renderizar() {
-            const container = document.getElementById('container-previa');
-            container.innerHTML = listaArquivos.length === 0 ? '<small class="text-muted">Nenhuma foto.</small>' : '';
-
-            listaArquivos.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const div = document.createElement('div');
-                    div.className = 'foto-wrapper';
-                    div.innerHTML = `
-                        ${index === 0 ? '<span class="capa-badge">CAPA</span>' : ''}
-                        <img src="${e.target.result}">
-                        <div class="controles-foto">
-                            <button type="button" class="btn btn-sm btn-outline-secondary btn-ctrl" onclick="mover(${index}, -1)">←</button>
-                            <button type="button" class="btn btn-sm btn-del btn-ctrl" onclick="remover(${index})">×</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary btn-ctrl" onclick="mover(${index}, 1)">→</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
 
         document.getElementById('formImovel').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            btn.disabled = true;
+            btn.innerText = "A Enviar...";
+
             const fd = new FormData();
             fd.append("idImovel", document.getElementById('idImovel').value);
             fd.append("titulo", document.getElementById('titulo').value);
+            
+            // CAPTURA O NOVO CAMPO 'TIPO'
+            fd.append("tipo", document.getElementById('tipo').value); 
+            
             fd.append("preco", document.getElementById('preco').value);
             fd.append("descricao", document.getElementById('descricao').value);
             fd.append("ativo", document.getElementById('ativo').checked);
-            listaArquivos.forEach(f => fd.append("fotos", f));
+            
+            const arquivos = document.getElementById('fotoInput').files;
+            Array.from(arquivos).forEach(f => fd.append("fotos", f));
 
-            const res = await fetch(`${API}/imoveis/salvar-imovel`, {
-                method: 'POST', headers: { 'X-Api-Key': KEY }, body: fd
-            });
-            if(res.ok) location.reload();
+            try {
+                const res = await fetch(`${API}/imoveis/salvar-imovel`, {
+                    method: 'POST',
+                    headers: { 'X-Api-Key': KEY },
+                    body: fd
+                });
+                if(res.ok) { 
+                    alert("Sucesso! Imóvel gravado."); 
+                    location.reload(); 
+                } else {
+                    alert("Erro ao gravar. Verifica a API.");
+                    btn.disabled = false;
+                    btn.innerText = "Salvar Imóvel";
+                }
+            } catch (err) { 
+                alert("Erro de comunicação com o servidor."); 
+                btn.disabled = false; 
+                btn.innerText = "Salvar Imóvel";
+            }
         };
 
         async function listar() {
-            const res = await fetch(`${API}/imoveis/admin-lista`);
-            const dados = await res.json();
-            document.getElementById('corpoTabela').innerHTML = dados.map(i => `
-                <tr>
-                    <td><img src="${i.fotos ? i.fotos.split(',')[0] : ''}" class="preview-img-tabela"></td>
-                    <td>${i.titulo}</td>
-                    <td>R$ ${i.preco.toLocaleString('pt-br')}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning" onclick="prepararEdicao(${JSON.stringify(i).replace(/"/g, '&quot;')})">Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="deletar(${i.id})">Excluir</button>
-                    </td>
-                </tr>
-            `).join('');
+            try {
+                const res = await fetch(`${API}/imoveis/admin-lista`);
+                const dados = await res.json();
+                document.getElementById('corpoTabela').innerHTML = dados.map(i => {
+                    const tipoImovel = (i.tipo || 'venda').toLowerCase();
+                    const badgeClass = tipoImovel === 'locacao' ? 'bg-locacao' : 'bg-venda';
+                    const tipoTexto = tipoImovel === 'locacao' ? 'Locação' : 'Venda';
+                    
+                    return `
+                        <tr>
+                            <td><img src="${i.fotos ? i.fotos.split(',')[0] : 'https://picsum.photos/seed/imovel/100'}" class="preview-img-tabela"></td>
+                            <td><span class="badge-tipo ${badgeClass}">${tipoTexto}</span></td>
+                            <td>${i.titulo}</td>
+                            <td>R$ ${i.preco.toLocaleString('pt-br')}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" onclick="prepararEdicao(${JSON.stringify(i).replace(/"/g, '&quot;')})">Editar</button>
+                                <button class="btn btn-sm btn-danger" onclick="deletar(${i.id})">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch(e) { console.error("Erro ao listar imóveis", e); }
         }
 
         function prepararEdicao(i) {
             document.getElementById('idImovel').value = i.id;
             document.getElementById('titulo').value = i.titulo;
+            
+            // PREENCHE O TIPO CORRETO NA HORA DE EDITAR (Se for antigo, assume venda)
+            document.getElementById('tipo').value = i.tipo ? i.tipo.toLowerCase() : 'venda'; 
+            
             document.getElementById('preco').value = i.preco;
             document.getElementById('descricao').value = i.descricao;
             document.getElementById('ativo').checked = i.ativo;
-            listaArquivos = [];
-            document.getElementById('container-previa').innerHTML = '<small class="text-info">Adicione novas fotos para substituir.</small>';
-            window.scrollTo(0,0);
+            
+            document.getElementById('fotoInput').value = ""; // Limpa o input de ficheiro
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function deletar(id) {
-            if(confirm("Excluir?")) {
+            if(confirm("Tens a certeza que pretendes excluir este imóvel?")) {
                 await fetch(`${API}/imoveis/deletar-imovel/${id}`, { method: 'DELETE', headers: { 'X-Api-Key': KEY } });
                 listar();
             }
