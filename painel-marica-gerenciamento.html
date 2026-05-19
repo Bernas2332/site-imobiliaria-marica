@@ -27,6 +27,48 @@
         /* ESTILOS DA TELA DE LOGIN */
         #telaLogin { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
         .box-login { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+
+        /* ESTILOS DO FORMULÁRIO DE ATENDIMENTO */
+        .container-atendimento {
+            background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: none; margin-bottom: 30px;
+        }
+        .container-atendimento h2 {
+            color: #000; text-transform: uppercase; font-weight: 800; margin-bottom: 25px; text-align: center;
+        }
+        .bloco-perfil {
+            background: #f8f9fa; border-left: 4px solid #ffc107; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 15px;
+        }
+        .bloco-perfil h4 {
+            color: #333; margin-bottom: 15px; font-weight: bold;
+        }
+
+        /* =======================================================
+           O SEGREDO DO PDF: REGRAS DE IMPRESSÃO
+           ======================================================= */
+        @media print {
+            /* Esconde as outras partes do Admin na hora da impressão */
+            #telaLogin, .card-admin, .btn, .d-flex.justify-content-end, .form-select { 
+                display: none !important; 
+            }
+            body { background: white !important; color: black !important; padding: 0; margin: 0; }
+            
+            .container-atendimento { 
+                box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; 
+            }
+            .container-atendimento h2 { 
+                color: black !important; font-size: 22px !important; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 30px !important; 
+            }
+            .bloco-perfil { 
+                display: block !important; background: none !important; border-left: 2px solid black !important; padding: 10px 0 10px 15px !important; 
+            }
+            .bloco-perfil h4 { 
+                color: black !important; font-size: 16px !important; text-transform: uppercase; 
+            }
+            .form-control { 
+                background: transparent !important; color: black !important; border: none !important; border-bottom: 1px dashed #666 !important; border-radius: 0 !important; padding: 2px 0 !important; box-shadow: none !important; resize: none !important;
+            }
+            label { color: black !important; font-weight: bold !important; margin-top: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -121,7 +163,129 @@
                 <tbody id="corpoTabela"></tbody>
             </table>
         </div>
-    </div>
+
+        <div class="container-atendimento">
+            <h2>Formulário de Atendimento</h2>
+            
+            <form id="formAtendimento">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-control" id="dataAtendimento" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Nome do Cliente</label>
+                        <input type="text" class="form-control" id="nomeCliente" placeholder="Nome completo" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Telefones</label>
+                        <input type="text" class="form-control" id="telefonesCliente" placeholder="(XX) XXXXX-XXXX" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Como soube de nossa empresa?</label>
+                        <input type="text" class="form-control" id="comoSoube" placeholder="Ex: Instagram, Placa, Indicação...">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Motivo da Visita / Telefonema</label>
+                        <textarea class="form-control" id="motivoVisita" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-primary fw-bold">Perfil do Cliente (Selecione para abrir os campos):</label>
+                    <select class="form-select border-primary" id="perfilCliente" onchange="alternarCamposPerfil()">
+                        <option value="">-- Selecione o Perfil --</option>
+                        <option value="comprador">Comprador (Quer comprar um Imóvel)</option>
+                        <option value="vendedor">Vendedor (Quer colocar seu Imóvel para Vender)</option>
+                        <option value="locador">Locador (Quer colocar seu Imóvel para Alugar)</option>
+                        <option value="locatario">Locatário (Quer Alugar um Imóvel)</option>
+                        <option value="contratante">Contratante (Legalização, Consultoria ou Assessoria Jurídica)</option>
+                    </select>
+                </div>
+
+                <div id="bloco-comprador" class="bloco-perfil d-none">
+                    <h4>Perfil: Comprador</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label">Tipo de Imóvel Desejado</label><input type="text" class="form-control" id="compTipo"></div>
+                        <div class="col-md-4"><label class="form-label">Valor Disponível</label><input type="text" class="form-control" id="compValor"></div>
+                        <div class="col-md-4"><label class="form-label">Forma de Pagamento</label><input type="text" class="form-control" id="compPagamento"></div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tem FGTS?</label>
+                            <select class="form-select" id="compFgts"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tem Dependentes?</label>
+                            <select class="form-select" id="compDependentes"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Já tem imóvel financiado?</label>
+                            <select class="form-select" id="compFinanciado"><option value="Não">Não</option><option value="Sim">Sim</option></select>
+                        </div>
+                        <div class="col-md-12"><label class="form-label">Outra Situação</label><input type="text" class="form-control" id="compOutraSituacao"></div>
+                        <div class="col-md-6"><label class="form-label">Imóveis Oferecidos</label><textarea class="form-control" id="compImoveisOferecidos" rows="2"></textarea></div>
+                        <div class="col-md-6"><label class="form-label">Status / Fechamento</label><textarea class="form-control" id="compStatus" rows="2"></textarea></div>
+                    </div>
+                </div>
+
+                <div id="bloco-vendedor" class="bloco-perfil d-none">
+                    <h4>Perfil: Vendedor</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label">Tipo de Imóvel</label><input type="text" class="form-control" id="vendTipo"></div>
+                        <div class="col-md-4"><label class="form-label">Valor Desejado</label><input type="text" class="form-control" id="vendValorDesejado"></div>
+                        <div class="col-md-4"><label class="form-label">Valor Avaliado pelo Corretor</label><input type="text" class="form-control" id="vendValorAvaliado"></div>
+                        <div class="col-md-4"><label class="form-label">Documentação (Atual)</label><input type="text" class="form-control" id="vendDocumentacao"></div>
+                        <div class="col-md-4">
+                            <label class="form-label">Novo ou Usado?</label>
+                            <select class="form-select" id="vendNovoUsado"><option value="Usado">Usado</option><option value="Novo">Novo</option></select>
+                        </div>
+                        <div class="col-md-4"><label class="form-label">Forma de Pagamento</label><input type="text" class="form-control" id="vendPagamento"></div>
+                        <div class="col-md-8"><label class="form-label">Endereço do Imóvel</label><input type="text" class="form-control" id="vendEndereco"></div>
+                        <div class="col-md-4"><label class="form-label">Ponto de Referência</label><input type="text" class="form-control" id="vendReferencia"></div>
+                        <div class="col-md-12"><label class="form-label">Pendências (Locatário, Documentação, Obras, etc.)</label><textarea class="form-control" id="vendPendencias" rows="2"></textarea></div>
+                    </div>
+                </div>
+
+                <div id="bloco-locador" class="bloco-perfil d-none">
+                    <h4>Perfil: Locador</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label">Tipo de Imóvel</label><input type="text" class="form-control" id="locadTipo"></div>
+                        <div class="col-md-4"><label class="form-label">Valor Desejado</label><input type="text" class="form-control" id="locadValorDesejado"></div>
+                        <div class="col-md-4"><label class="form-label">Valor Avaliado pelo Corretor</label><input type="text" class="form-control" id="locadValorAvaliado"></div>
+                        <div class="col-md-6"><label class="form-label">Documentação (Atual)</label><input type="text" class="form-control" id="locadDocumentacao"></div>
+                        <div class="col-md-6"><label class="form-label">Forma de Pagamento</label><input type="text" class="form-control" id="locadPagamento"></div>
+                        <div class="col-md-8"><label class="form-label">Endereço do Imóvel</label><input type="text" class="form-control" id="locadEndereco"></div>
+                        <div class="col-md-4"><label class="form-label">Ponto de Referência</label><input type="text" class="form-control" id="locadReferencia"></div>
+                        <div class="col-md-12"><label class="form-label">Pendências (Locatário, Documentação, Obras, etc.)</label><textarea class="form-control" id="locadPendencias" rows="2"></textarea></div>
+                    </div>
+                </div>
+
+                <div id="bloco-locatario" class="bloco-perfil d-none">
+                    <h4>Perfil: Locatário</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Tipo de Imóvel Desejado</label><input type="text" class="form-control" id="locatTipo"></div>
+                        <div class="col-md-6"><label class="form-label">Valor da Locação</label><input type="text" class="form-control" id="locatValor"></div>
+                        <div class="col-md-6"><label class="form-label">Imóveis Oferecidos</label><textarea class="form-control" id="locatImoveisOferecidos" rows="2"></textarea></div>
+                        <div class="col-md-6"><label class="form-label">Status ou Fechamento</label><textarea class="form-control" id="locatStatus" rows="2"></textarea></div>
+                    </div>
+                </div>
+
+                <div id="bloco-contratante" class="bloco-perfil d-none">
+                    <h4>Perfil: Contratante (Serviços)</h4>
+                    <div class="row g-3">
+                        <div class="col-md-12"><label class="form-label">Tipo de Serviço Desejado</label><input type="text" class="form-control" id="contServico" placeholder="Legalização, Consultoria, Assessoria..."></div>
+                        <div class="col-md-12"><label class="form-label">Detalhes do Serviço (Brevidade)</label><textarea class="form-control" id="contDetalhes" rows="3"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <label class="form-label">Observações Diversas</label>
+                    <textarea class="form-control" id="obsDiversas" rows="3"></textarea>
+                </div>
+
+                <button type="button" class="btn btn-warning btn-lg w-100 fw-bold" onclick="imprimirFicha()">📄 GERAR FICHA EM PDF</button>
+            </form>
+        </div>
+        </div>
 
     <script>
         const API = "https://api-imobiliaria-marica.onrender.com";
@@ -379,6 +543,29 @@
                 });
                 listar();
             }
+        }
+
+        // ==========================================
+        // LÓGICA DA FICHA DE ATENDIMENTO
+        // ==========================================
+        function alternarCamposPerfil() {
+            const perfil = document.getElementById('perfilCliente').value;
+            
+            document.querySelectorAll('.bloco-perfil').forEach(bloco => {
+                bloco.classList.add('d-none');
+            });
+
+            if (perfil) {
+                document.getElementById(`bloco-${perfil}`).classList.remove('d-none');
+            }
+        }
+
+        function imprimirFicha() {
+            if (!document.getElementById('nomeCliente').value || !document.getElementById('dataAtendimento').value) {
+                alert("Por favor, preencha ao menos a Data e o Nome do Cliente antes de gerar o PDF.");
+                return;
+            }
+            window.print();
         }
     </script>
 </body>
